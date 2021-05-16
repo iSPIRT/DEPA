@@ -1,0 +1,1115 @@
+openapi: 3.0.1
+info:
+  title: DEPA
+  description: DEPA API specs. 
+  version: 2.0.0
+externalDocs:
+  description: Find out more about Depa 2.0
+  url: https://www.google.com/search?q=depa
+servers:
+- url: https://host:2020/gateway/depa/v2
+  description: Gateway APIs location
+- url: https://host:2020/cm/depa/v2
+  description: CM APIs location
+- url: https://host:2020/dc/depa/v2
+  description: DC APIs location
+- url: https://host:2020/dp/depa/v2
+  description: DP APIs location
+tags:
+- name: Gateway
+  description: Endpoints which gateway needs to impliment. A gateway can take a approach of store-and-fwd or redirect when linking the entities.
+- name: Consent Manager (CM)
+  description: Endpoints which an Consent manager needs to impliment
+- name: Data Provider (DP)
+  description: Endpoints which need to be implimented by an Data provider
+- name: Data Consumer (DC)
+  description: Endpoint listing for the data consumer
+
+
+paths:
+  # /lookup:
+  #   get:
+  #     tags:
+  #     - Gateway
+  #     summary: lookup the entity by name/type on the gateway
+  #     description: lookup the entity by name/type on the gateway
+  #     parameters:
+  #       - name: name
+  #         in: query
+  #         description: name of the entity
+  #         required: true
+  #         schema:
+  #           type: string
+  #       - name: type
+  #         in: query
+  #         description: type of the entity like cm/dp/dc/gateway
+  #         required: true
+  #         schema:
+  #           type: string
+            
+  #     responses:
+  #       200:
+  #         description: ok
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               allOf:
+  #               - $ref: '#/components/schemas/Entity'
+  #               properties:
+  #                 gatewayList:
+  #                   type: array
+  #                   description: list of gateways this entity is on
+  #                   items:
+  #                     type: string
+  #                 location:
+  #                   type: string
+  #                   format: url
+  #                   description: the url where the specs are hosted.
+  #     security:
+  #     - api_key: []
+
+  /notification/heartbeat:
+    post:
+      tags:
+      - Gateway
+      summary: Recieve heartbeat.
+      description: recieve an heartbeat from the participating entities.
+      requestBody:
+        content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                - $ref: '#/components/schemas/Notification'
+                properties:
+                  entity:
+                    type: object
+                    allOf:
+                    - $ref: '#/components/schemas/Entity'
+                    properties:
+                      gatewayList:
+                        type: array
+                        description: list of gateways this entity is on
+                        items:
+                          type: string
+                      location:
+                        type: string
+                        format: url
+                        description: the url where the service is hosted.
+                  status:
+                    type: string
+        required: true
+      responses:
+        200:
+          description: ok
+        401:
+          description: Authorization information is missing or invalid.
+      security:
+      - api_key: []
+      
+  # /getCertificate:
+  #   get:
+  #     tags:
+  #     - Data Provider (DP)
+  #     - Data Consumer (DC)
+  #     - Consent Manager (CM)
+  #     - Gateway
+  #     summary: Get the ceritificate.
+  #     description: The certificate acquired by a certification agency.
+  #     responses:
+  #       200:
+  #         description: OK
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  
+  /consent-requests/is-supported:
+    post:
+      tags:
+      - Data Provider (DP)
+      - Gateway
+      summary: Check if the consent-request can be fulfilled by the DP
+      description: CM to check if the ask placed by the DC is supported by the DP selected by the user
+      parameters:
+        - $ref:  '#/components/parameters/GatewayHeader'
+      requestBody:
+        content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  consentRequests:
+                    type: array
+                    items:
+                       $ref: '#/components/schemas/ConsentRequestArtifact'
+        required: true
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  supported:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        consentRequestId:
+                          type: string
+                        contentType:
+                          type: string
+                  notSupported:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        consentRequestId:
+                          type: string
+        401:
+          description: Authorization information is missing or invalid.
+      security:
+      - api_key: []
+      
+      
+  /consent-requests/{consentRequestIds}:
+    get:
+      tags:
+      - Consent Manager (CM)
+      - Gateway
+      summary: Check the status of the consent request.
+      description: DC can check the status of the consent requests.
+      parameters:
+        - $ref:  '#/components/parameters/GatewayHeader'
+        - name: consentRequestIds
+          in: path
+          required: true
+          schema:
+            type: string
+        
+      # requestBody:
+      #   content:
+      #       application/json:
+      #         schema:
+      #           type: object
+      #           properties:
+      #             consentRequestIds:
+      #               type: array
+      #               items:
+      #                 type : string
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    consentRequestId:
+                      type: string
+                    status:
+                      type: string
+                      enum:
+                        - GRANTED
+                        - DENIED
+                        - EXPIRED
+                        - USER_ACTION_AWAITED
+                        - REVOKED
+                        - PAUSED
+                        - RESUMED
+        401:
+          description: Authorization information is missing or invalid.
+      security:
+      - api_key: []
+      
+     
+  /consent-requests:
+    post:
+      tags:
+      - Consent Manager (CM)
+      - Gateway
+      summary: Post the consent-request.
+      description: Used by the DC to post the consent request.
+      parameters:
+        - $ref:  '#/components/parameters/GatewayHeader'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              oneOf:
+              - $ref: '#/components/schemas/NewConsentRequest_1.0'
+              # - $ref: '#/components/schemas/RevokeConsentRequest_1.0'
+        required: true
+      responses:
+        200:
+          description: ok
+        401:
+          description: Authorization information is missing or invalid.
+      security:
+      - api_key: []
+      
+  /consent:
+    post:
+      tags:
+      - Data Provider (DP)
+      - Data Consumer (DC)
+      - Gateway
+      summary: Post consent artifact
+      description: provide the consent artifact to the DP and DC. CM can either grant or deny the consent.
+      parameters:
+        - $ref:  '#/components/parameters/GatewayHeader'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              oneOf:
+              - $ref: '#/components/schemas/GrantedConsentRequest_1.0'
+              - $ref: '#/components/schemas/DeniedConsentRequest_1.0'
+      responses:
+        200:
+         description: ok
+        401:
+          description: Authorization information is missing or invalid.
+      security:
+      - dp_oauth:
+        - write:notifications
+      - api_key: []
+      
+    put:
+      tags:
+      - Data Provider (DP)
+      - Data Consumer (DC)
+      - Gateway
+      summary: update the consent artifact.
+      description: update by either revoking, pausing or resumeing the consent.
+      parameters:
+        - $ref:  '#/components/parameters/GatewayHeader'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              oneOf:
+              - $ref: '#/components/schemas/RevokeConsentRequest_1.0'
+              - $ref: '#/components/schemas/PauseConsentRequest_1.0'
+              - $ref: '#/components/schemas/ResumeConsentRequest_1.0'
+      responses:
+        200:
+         description: ok
+        401:
+          description: Authorization information is missing or invalid.
+      security:
+      - dp_oauth:
+        - write:notifications
+      - api_key: []
+     
+  /notification/data:
+    post:
+      tags:
+      - Consent Manager (CM)
+      - Data Consumer (DC)
+      - Gateway
+      summary: Provide data related notifications
+      description: notifications for entities when data is exchanged.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              oneOf:
+              - $ref: '#/components/schemas/PrepareDataNotification_1.0'
+              - $ref: '#/components/schemas/DataReadyNotification_1.0'
+              - $ref: '#/components/schemas/DataTxNotification_1.0'
+              - $ref: '#/components/schemas/DataRxNotification_1.0'
+      responses:
+        200:
+          description: ok
+        401:
+          description: Authorization information is missing or invalid.
+      security:
+      - api_key: []
+      
+  /data:
+    get:
+      tags:
+      - Data Provider (DP)
+      summary: Fetch data
+      description: Fetch the requested data.
+      parameters:
+          - in: query
+            name: partNo
+            schema:
+              type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contentType:
+                    type: string
+                  multiPart:
+                    type: boolean
+                  partNo:
+                    type: number
+                  totalParts:
+                    type: number
+                  totalSizeInBytes:
+                    type: integer
+                  partSizeInBytes:
+                    type: integer
+                  data:
+                    type: string
+        401:
+          description: Authorization information is missing or invalid.
+        550:
+          description: Consent expired.
+        551:
+          description: Consent revoked.
+        552:
+          description: Consent paused.
+      security:
+      - access_key: []
+      
+  /notification/error:
+    post:
+      tags:
+      - Gateway
+      - Data Provider (DP)
+      - Consent Manager (CM)
+      - Data Consumer (DC)
+      summary: notify on error condition.
+      description: post the error details in relation to the request which happend before.
+      requestBody:
+        content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                - $ref: '#/components/schemas/ErrorNotification_1.0'
+      responses:
+        200:
+          description: ok
+      security:
+      - api_key: []
+      
+  /notification/ack:
+    post:
+      tags:
+      - Gateway
+      - Data Provider (DP)
+      - Consent Manager (CM)
+      - Data Consumer (DC)
+      summary: notify an acknowledgement.
+      description: post acknowledgement to the request.
+      requestBody:
+        content:
+            application/json:
+              schema:
+                type: object
+                allOf:
+                - $ref: '#/components/schemas/AckNotification_1.0'
+      responses:
+        200:
+          description: ok
+      security:
+      - api_key: []
+                
+  /link:
+    post:
+      tags:
+      - Gateway
+      - Data Provider (DP)
+      summary: initiate the auth with the DP for linking eihter thru OAuth or CIBA
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                
+  /notification/link:
+    post:
+      tags:
+      - Consent Manager (CM)
+      - Gateway
+      summary: Initiate DP linking.
+      description: Linking is initated by the user from the DP side by providing his CMs id
+      parameters:
+        - $ref:  '#/components/parameters/GatewayHeader'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              oneOf:
+              - $ref: '#/components/schemas/InitiateLinkingRequest_1.0'
+              - $ref: '#/components/schemas/SucessfullLinkingNotification_1.0'
+              - $ref: '#/components/schemas/ForgetLinkRequest_1.0'
+                
+        required: true
+      responses:
+        200:
+          description: ok
+      security:
+      - api_key: []
+                
+  /link/scheme:
+    get:
+      tags:
+      - Data Provider (DP)
+      summary: get the scheme which is supported by the DP for linking OAuth or CIBA
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                
+  # /link/callback:
+  #   post:
+  #     tags:
+  #     - Consent Manager (CM)
+  #     summary: Get a call back from the DP on sucessfull user authentication. This is to be used in the push mode of CIBA.
+  #     responses:
+  #       200:
+  #         description: OK
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+      
+  /link/token:
+    post:
+      tags:
+      - Data Provider (DP)
+      summary: Get the token as the proof of linkage b/w DP and CM. Can also be used for polling in case of CIBA. Multiple tokens will be returned one for each account which is linked.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  allOf:
+                  - $ref: '#/components/schemas/Account'
+                  properties:
+                    token:
+                      type: string
+                      description: token in the form of JWT.
+      
+  /link/refresh:
+    post:
+      tags:
+      - Data Provider (DP)
+      summary: Refresh the token obtained.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+      
+      
+
+
+#--------------- SCHEMA DEFINITIONS -----------
+components:
+  schemas:
+  
+    Entity:
+      type: object
+      properties:
+        name:
+          type: string
+        domain:
+          type: string
+        website:
+          type: string
+  
+  
+    Account:
+      type: object
+      description: refered to the arrangement with the service provider from which the data can be provided. Like savings a/c, FD, mobileNumber/landlineNumer with the the telecom provider, account with the diagnositcs lab, records held in the account with doctor.
+      properties:
+        id:
+          type: string
+          description: identifier of the account.
+        type:
+          type: string
+        description:
+          type: string
+        otherDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyValuePair'
+
+
+    Artifact:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id of the artifact
+        schemaVersion:
+          type: string
+          description: type of artifact
+        time:
+          type: string
+          format: date-time
+          description: time of artifact generation
+        expiryTime:
+          type: string
+          format: date-time
+          description: time of artifact expiration
+        # by:
+        #   type: object
+        #   description: by whom this artifact is created by
+        #   allOf:
+        #     - $ref: '#/components/schemas/Entity'
+        # for:
+        #   type: array
+        #   description: for whom this artifact is intended for.
+        #   items:
+        #     allOf:
+        #       - $ref: '#/components/schemas/Entity'
+        signature:
+          type: string
+          description: Digital signature in JWS format Base64 encoded
+
+
+    ConsentRequestArtifact:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Artifact'
+      properties:
+        user:
+          type: string
+          format: email
+          description: consent manager id of the user who initiated the request.
+          
+        additionalParms:
+          description: additional parameters which can be added by the DC. Can used for grouping of asks, recording service id etc..
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyValuePair'
+        
+        requestedData:
+          type: object
+          description: defines the kind of data which is requested. like saving account statement, doctors prescription etc...
+          properties:
+            type:
+              type: string
+            # contentTypeSupported:
+            #   description: The data types which are supported by the DC for consumption of data. This will of the format as defined in https://tools.ietf.org/html/rfc7231#section-3.1.1.5 Example - text/plain or application/json or image/png
+            #   type: string
+            # multiPartSupported:
+            #   description: does the DC support fetching of data in parts.
+            #   type: boolean
+            dateRange:
+              type: object
+              properties:
+                from:
+                  type: string
+                  format: date-time
+                to:
+                  type: string
+                  format: date-time
+            frequency:
+              type: object
+              description: freq at which data is required. if not given only one time sharing will be done.
+              allOf:
+              - $ref: '#/components/schemas/TimeUnit'
+        # requestedDataType:
+        #   type: object
+        #   allOf:
+        #     - $ref: '#/components/schemas/dataType'
+        purpose:
+          type: object
+          required:
+            - text
+            - code
+          properties:
+            text:
+              type: string
+            code:
+              type: string
+              description: 'From the fixed set, documented at refUri'
+            refUri:
+              type: string
+              format: uri
+        dataEraseAt:
+          type: string
+          format: date-time
+        # suggestedDataProviders:
+        #   description: an hint to the user who all DP can fulfill this request.
+        #   type: array
+        #   items:
+        #     $ref: '#/components/schemas/Entity'
+        # publicKey:
+        #   type: string
+        #   description: base64 encoded public key shared by DC
+            
+      
+    ConsentArtifact:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Artifact'
+      properties:
+        user:
+          type: string
+          format: email
+          description: user who is giving the consent.identified by the consent managers id.
+        consentDetails:
+           $ref: '#/components/schemas/ConsentRequestArtifact'
+        
+    TimeUnit:
+      type: object
+      properties:
+        unit:
+          type: string
+          description: A unit of time
+          enum:
+            - HR
+            - DAY
+            - WEEK
+            - MONTH
+            - YEAR
+        value:
+          type: number
+          
+    KeyValuePair:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+      
+    # dataType:
+    #       type: object
+    #       properties: 
+    #         contentType:
+    #           type: array
+    #           description: The data types which are supported by the DC for consumption of data. This will of the format as defined in https://tools.ietf.org/html/rfc7231#section-3.1.1.5 Example - text/plain or application/json or image/png
+    #           items:
+    #             type: string
+    #         multi-part:
+    #           type: boolean
+    
+    Request:
+      type: object
+      properties:
+        reqId:
+          type: string
+          description: unique id of the request
+        reqType:
+          type: string
+          description: type of request like GrantedConsentRequest_1.0, NewConsentRequest_1.0 etc..
+        time:
+          type: string
+          format: date-time
+          description: time of request
+        src:
+          type: string
+          description: name of the entity from where this request originated.
+        dest:
+          type: string
+          description: name of the entity for whom this request is for.
+        #requestHeaders:
+        #  type: object
+        #  description: key-value pairs for additional properties.
+      discriminator:
+        propertyName: type
+        
+    Notification:
+      type: object
+      properties:
+        notificationId:
+          type: string
+          description: unique id of the request
+        notificationType:
+          type: string
+          description: type of request like ErrorNotification_1.0 etc..
+        time:
+          type: string
+          format: date-time
+          description: time of notification
+        src:
+          type: string
+          description: name of the entity from where this notification originated.
+        dest:
+          type: string
+          description: name of the entity from whom this notification is for.
+      discriminator:
+        propertyName: type
+        
+    ErrorNotification_1.0:
+      description: A error notification to inform about the error conditions to the entity from where the request originated.
+      allOf:
+      - $ref: '#/components/schemas/Notification'
+      properties:
+        refRequestId:
+          description: reference request id against which this error is reported.
+          type: string
+        refRequestType:
+          description: the name of the request type along with version. For example - GrantConsent_1.0
+          type: string
+        errorCode:
+          description: error code
+          type: string
+        errorMsg:
+          description: description of the error.
+          type: string
+          # Sample error codes and messages
+          # 301 - msg delivery failed.
+          # 302 - request not supported.
+           
+          
+          
+          # 4XX - for consent request related erorrs
+          # 400 - schema version not supported
+          # 401 - stale request
+          # 402 - data life elapsed.
+          # 403 - signature not correct.
+          # 404 - user doesn't exists or is inactive
+          
+          # 5XX - for consent related erorrs
+          #  - schema version not supported
+          # - consent id not present.
+          # - consent signature not correct.
+          # - link user before sharing consent.
+          # - consent signature not valid.
+          
+          
+          # 9XX - for data related errors
+          # 901 - multi part not supported by DC.
+          # 902 - data not available
+          # 903 - data requested too soon. - when dc makes a prepare call too early before the next cycle.
+
+          
+    AckNotification_1.0:
+      description: An acknowledgement for recieving the original request.
+      allOf:
+      - $ref: '#/components/schemas/Notification'
+      properties:
+        refRequestId:
+          description: reference request id for which this acknowlegement is.
+          type: string
+        refRequestType:
+          description: the name of the request type along with version. For example - GrantConsent_1.0
+          type: string
+
+    InitiateLinkingRequest_1.0:
+      allOf:
+      - $ref: '#/components/schemas/Request'
+      properties:
+        # entity:
+        #   $ref: '#/components/schemas/Entity'
+        scheme:
+          type: string
+          enum:
+            - OAUTH
+            - CIBA
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Account'
+            
+    SucessfullLinkingNotification_1.0:
+      allOf:
+      - $ref: '#/components/schemas/Notification'
+      properties:
+        # entity:
+        #   $ref: '#/components/schemas/Entity'
+        accountsLinkingStatus:
+          type: array
+          items:
+            # allOf:
+            # - $ref: '#/components/schemas/Account'
+            properties:
+              accountId:
+                type: string
+              status:
+                type: string
+                enum:
+                - LINKED
+                - FAILED
+              failureReason:
+                type: string
+            
+    ForgetLinkRequest_1.0:
+      allOf:
+      - $ref: '#/components/schemas/Request'
+      properties:
+        accountIds:
+          type: array
+          items:
+            type: string
+      
+    NewConsentRequest_1.0:
+      allOf:
+      - $ref: '#/components/schemas/Request'
+      properties:
+        consentRequests:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ConsentRequestArtifact'
+      
+    # RevokeConsentRequest_1.0:
+    #   allOf:
+    #   - $ref: '#/components/schemas/Request'
+    #   properties:
+    #     consentRequestIds:
+    #         type: array
+    #         items: 
+    #           type: string
+    
+    GrantedConsentRequest_1.0:
+      allOf:
+      - $ref: '#/components/schemas/Request'
+      properties:
+        consentArtifacts:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/ConsentArtifact'
+
+    DeniedConsentRequest_1.0:
+      allOf:
+      - $ref: '#/components/schemas/Request'
+      properties:
+        deniedArtifactIds:
+          type: array
+          description: ids of the consent request artifacts against which consent is denied by the user.
+          items:
+            type: object
+            properties:
+              consentRequestId:
+                type: string
+              denialReason:
+                type: string
+    
+    RevokeConsentRequest_1.0:
+      allOf:
+      - $ref: '#/components/schemas/Request'
+      properties:
+        consentArtifactIds:
+          type: array
+          description: ids of the consent artifacts which are revoked.
+          items:
+            type: object
+            properties:
+              askId:
+                type: string
+              ravokeReason:
+                type: string
+            
+    PauseConsentRequest_1.0:
+      allOf:
+      - $ref: '#/components/schemas/Request'
+      properties:
+        consentArtifactIds:
+          type: array
+          items:
+            properties:
+              askId:
+                type: string
+                description: ids of the consent artifacts which are paused.
+              pauseReason:
+                type: string
+              pauseTill:
+                type: string
+                description: If not provided consent will resume when a resume event is recieved else resume after the given time.
+                format: date-time
+            
+    ResumeConsentRequest_1.0:
+      allOf:
+      - $ref: '#/components/schemas/Request'
+      properties:
+        consentArtifactIds:
+          type: array
+          description: ids of the consent artifacts which are resumed.
+          items:
+            type: string
+            
+    PrepareDataNotification_1.0:
+      description: A notification from DC to DP that he can now start preparing the data.
+      allOf:
+      - $ref: '#/components/schemas/Notification'
+      properties:
+        consentId:
+          type: string
+        publicKeyDetails:
+          description: base64 encoded value of the JWK. As  per rfc7517
+        # // why not use the JWK format to define the key Details ??
+        #   type: object
+        #   required:
+        #     - cryptoAlg
+        #     - curve
+        #     - dhPublicKey
+        #     - nonce
+        #   properties:
+        #     cryptoAlg:
+        #       type: string
+        #       format: string
+        #       example: ECDH
+        #     curve:
+        #       type: string
+        #       format: string
+        #       example: Curve25519
+        #     dhPublicKey:
+        #       type: object
+        #       required:
+        #         - expiry
+        #         - parameters
+        #         - keyValue
+        #       properties:
+        #         expiry:
+        #           type: string
+        #           format: date-time
+        #         parameters:
+        #           type: string
+        #           format: string
+        #           example: Curve25519/32byte random key
+        #         keyValue:
+        #           type: string
+        #           format: string
+        #     nonce: ??
+        #       type: string
+        #       format: 32 byte string
+        #       example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+    
+    DataReadyNotification_1.0:
+      description: A notification from DP to DC that data is ready to be fetched.
+      allOf:
+      - $ref: '#/components/schemas/Notification'
+      properties:
+        consentId:
+          type: string
+        accessToken:
+          type: string
+          description: base64 encoded JWT token. Encrypted by the key shared by the DC during the prepare notification call. 
+        url:
+          type: string
+          description: Dynamic URI generated by the DP from where the data can be fetched. This is encrypted by the key shared by the DC during the prepare notification call. 
+        contentType:
+          type: string
+          description: content type of the data which will be available from the endpoint.
+        multi-part:
+          type: boolean
+        total-parts:
+          type: integer
+        totalSizeInBytes:
+          type: integer
+          
+      
+    DataTxNotification_1.0:
+      allOf:
+      - $ref: '#/components/schemas/Notification'
+      properties:
+        cycle:
+          description: When data transfer need to happen on a defined frequency then this parameter tells the state of each cycle.
+          type: integer
+        txState:
+          type: string
+          description: State of transmission
+          enum:
+            - STARTED
+            - COMPLETED
+            - ELAPSED
+        value:
+          type: number
+      
+    DataRxNotification_1.0:
+      allOf:
+      - $ref: '#/components/schemas/Notification'
+      properties:
+        cycle:
+          description: When data transfer need to happen on a defined frequency then this parameter tells the state of each cycle.
+          type: integer
+        txState:
+          type: string
+          description: State of transmission
+          enum:
+            - TRIGGERED
+            - COMPLETED
+            - IN_PROGRESS
+        value:
+          type: number
+        
+
+#---------- SECURITY SCHEMES ------------
+  securitySchemes:
+    dp_oauth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth
+          tokenUrl: /oauth/token
+          refreshUrl: /oauth/refresh
+          scopes:
+            write:notifications: post events
+            read:data: read data from the DP
+    api_key:
+      type: apiKey
+      description: A key in the form of JWT shared by the gateeway with the entity at the time of regestration. 
+      name: api_key
+      in: header
+    access_key:
+      type: apiKey
+      description: A key shared by DP to DC to fetch the data.
+      name: accessToken
+      in: query
+
+  parameters:
+    GatewayHeader:
+      in: header
+      name: X-fwd-to
+      description: Name of the entity to which the request needs to be forward. This can be comma seperated if request needs to be fwd to multiple entities.
+      schema:
+        type: string
+      required: true
+      
+  responses:
+    '200':
+      description: OK
+      headers:
+        X-Rate-Limit:
+          description: calls per hour allowed by the user
+          schema:
+            type: integer
+            format: int32
+        X-Expires-After:
+          description: date in UTC when token expires
+          schema:
+            type: string
+            format: date-time
+    '400':
+      description: Bad request.
+    '401':
+      description: Authorization information is missing or invalid.
+    '404':
+      description: Not found.
+    '5XX':
+      description: Unexpected error.
+      
+# security:
+# - api_key: []
+
+      
