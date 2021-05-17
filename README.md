@@ -4,15 +4,17 @@
 
 ### Discovery Flow
 
+![discoveryFlow](/seqDiagram/discoveryFlow.png?raw=true "discoveryFlow")
+
 ### Linking Flow
 
-[![LinkingSeq](https://drive.google.com/uc?export=view&id=1IBehw0XasDkhVfU2wMGpW93aoHHQAYOz "LinkingSeq")](https://drive.google.com/uc?export=view&id=1IBehw0XasDkhVfU2wMGpW93aoHHQAYOz "LinkingSeq")
+![LinkingSeq](/seqDiagram/linkingFlow.png?raw=true "LinkingSeq")
 
 ### Consent Flow
-[![ConsentSeq](https://drive.google.com/uc?export=view&id=1BQqayRFoYGIPEu7gmzuHUcILRQeie7n2 "ConsentSeq")](https://drive.google.com/uc?export=view&id=1BQqayRFoYGIPEu7gmzuHUcILRQeie7n2 "ConsentSeq")
+![ConsentFlow](/seqDiagram/consentFlow.png?raw=true "ConsentFlow")
 
 ### Data Flow
-[![DataSeq](https://drive.google.com/uc?export=view&id=1xb9Pwl4kmDChpAZ0FDOOBkcxDglJ5jaR "DataSeq")](https://drive.google.com/uc?export=view&id=1xb9Pwl4kmDChpAZ0FDOOBkcxDglJ5jaR "DataSeq")
+![DataFlow](/seqDiagram/dataFlow.png?raw=true "DataFlow")
 
 
 
