@@ -4,11 +4,11 @@
 
 ### Discovery Flow
 
-![discoveryFlow](/seqDiagram/discoveryflow.png?raw=true "discoveryFlow")
+![discoveryFlow](/seqDiagram/discoveryFlow.png?raw=true "discoveryFlow")
 
 ### Linking Flow
 
-![LinkingSeq](/seqDiagram/linkingSchemes.png?raw=true "LinkingSeq")
+![LinkingSeq](/seqDiagram/linkingFlow.png?raw=true "LinkingSeq")
 
 ### Consent Flow
 ![ConsentFlow](/seqDiagram/consentFlow.png?raw=true "ConsentFlow")
