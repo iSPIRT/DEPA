@@ -4,6 +4,8 @@
 
 ### Discovery Flow
 
+![discoveryFlow](/seqDiagram/discoveryflow.png?raw=true "discoveryFlow")
+
 ### Linking Flow
 
 ![LinkingSeq](/seqDiagram/linkingSchemes.png?raw=true "LinkingSeq")
