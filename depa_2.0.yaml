@@ -27,47 +27,115 @@ tags:
 
 
 paths:
-  # /lookup:
-  #   get:
-  #     tags:
-  #     - Gateway
-  #     summary: lookup the entity by name/type on the gateway
-  #     description: lookup the entity by name/type on the gateway
-  #     parameters:
-  #       - name: name
-  #         in: query
-  #         description: name of the entity
-  #         required: true
-  #         schema:
-  #           type: string
-  #       - name: type
-  #         in: query
-  #         description: type of the entity like cm/dp/dc/gateway
-  #         required: true
-  #         schema:
-  #           type: string
-            
-  #     responses:
-  #       200:
-  #         description: ok
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: object
-  #               allOf:
-  #               - $ref: '#/components/schemas/Entity'
-  #               properties:
-  #                 gatewayList:
-  #                   type: array
-  #                   description: list of gateways this entity is on
-  #                   items:
-  #                     type: string
-  #                 location:
-  #                   type: string
-  #                   format: url
-  #                   description: the url where the specs are hosted.
-  #     security:
-  #     - api_key: []
+
+  /dp/{id}:
+    get:
+      tags:
+      - Gateway
+      summary: Get the data provider by id.
+      description: Get the data provider by id.
+      parameters:
+        - name : id
+          in : path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        401:
+          description: Authorization information is missing or invalid.
+      security:
+      - api_key: []
+          
+  /dp/tags:
+    get:
+      tags:
+      - Gateway
+      summary: Get the list of tags.
+      description: get the list of tags using which the gateway has done the tagging of the data providers. This will enable to do the filtering while searching of the data providers.
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tag:
+                      type: string
+                      description: list of gateways this entity is on
+                    description:
+                      type: string
+                      description: description of the tag. some example of tags - #bank , #hospital , #pharmacy etc ...
+        401:
+          description: Authorization information is missing or invalid.
+      security:
+      - api_key: []
+      
+  /dp:
+    get:
+      tags:
+      - Gateway
+      summary: find the data provider on the gateway
+      description: lookup the entity by name/type on the gateway
+      parameters:
+        - name: name
+          in: query
+          description: name of the entity.
+          schema:
+            type: string
+        - name: fuzzy_matching
+          in: query
+          description: should do the fuzzy matching of the name or not.
+          schema:
+            type: boolean
+        - name: tags
+          in: query
+          description: comma seperated tags for filtering.
+          schema:
+            type: string
+        - name: lat-long
+          in: query
+          description: user location in the format latitude,longitude.
+          schema:
+            type: string
+        - name: radius
+          in: query
+          description: radius in km. to be used with lat-long parameter.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: true
+          description: no of records to be fetched.
+          schema:
+            type: integer
+        - name: page
+          in: query
+          required: true
+          description: page number to be fetched. Acts as an offset.
+          schema:
+            type: integer
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchResponse'
+        401:
+          description: Authorization information is missing or invalid.
+      security:
+      - api_key: []
 
   /notification/heartbeat:
     post:
@@ -534,6 +602,9 @@ components:
     Entity:
       type: object
       properties:
+        id:
+          description : id of the entity assigned by the gateway to uniquely identify the entity. Each gateway can have its own id assigned to a same entity.
+          type: string
         name:
           type: string
         domain:
@@ -1002,12 +1073,15 @@ components:
       properties:
         consentId:
           type: string
+        sessionKey:
+          description: session key using which the accesstoken and url are encrypted. The session key is itself encrypted with the prulic key shared by the DC in prepare notification. This is base64 encoded value of the JWK. As  per rfc7517
+          type: string
         accessToken:
           type: string
-          description: base64 encoded JWT token. Encrypted by the key shared by the DC during the prepare notification call. 
+          description: base64 encoding of encrypted JWT token. Encrypted by the session key.
         url:
           type: string
-          description: Dynamic URI generated by the DP from where the data can be fetched. This is encrypted by the key shared by the DC during the prepare notification call. 
+          description: Dynamic URI generated by the DP from where the data can be fetched. This is encrypted by the session key.
         contentType:
           type: string
           description: content type of the data which will be available from the endpoint.
@@ -1052,6 +1126,37 @@ components:
             - IN_PROGRESS
         value:
           type: number
+          
+    SearchResponse:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/Entity'
+      properties:
+        tags:
+          type: array
+          description: list of tags
+          items:
+            type: string
+        gatewayList:
+          type: array
+          description: list of gateways this entity is on
+          items:
+            type: string
+        address:
+          type: object
+          properties:
+            firstLine:
+              type: string
+            secondLine:
+              type: string
+            thirdLine:
+              type: string
+            pin:
+              type: integer
+            state:
+              type: string
+            country:
+              type: string
         
 
 #---------- SECURITY SCHEMES ------------
