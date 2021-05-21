@@ -8,7 +8,11 @@
 
 ### Linking Flow
 
-![LinkingSeq](/seqDiagram/linkingFlow.png?raw=true "LinkingSeq")
+#### DP initiated account linking
+![LinkingDP](/seqDiagram/accountLinking-DPSide.png?raw=true "LinkingDP")
+
+#### CM initiated account linking
+![LinkingCM](/seqDiagram/accountLinking-CMSide.png?raw=true "LinkingCM")
 
 ### Consent Flow
 ![ConsentFlow](/seqDiagram/consentFlow.png?raw=true "ConsentFlow")
