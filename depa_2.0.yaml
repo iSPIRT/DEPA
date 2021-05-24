@@ -492,27 +492,28 @@ paths:
       security:
       - api_key: []
                 
-  /link:
-    post:
-      tags:
-      - Gateway
-      - Data Provider (DP)
-      summary: initiate the auth with the DP for linking eihter thru OAuth or CIBA
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
+  # /link:
+  #   post:
+  #     tags:
+  #     - Gateway
+  #     - Data Provider (DP)
+  #     summary: initiate the auth with the DP for linking eihter thru OAuth or CIBA
+  #     responses:
+  #       200:
+  #         description: OK
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
                 
   /notification/link:
     post:
       tags:
       - Consent Manager (CM)
+      - Data Provider (DP)
       - Gateway
-      summary: Initiate DP linking.
-      description: Linking is initated by the user from the DP side by providing his CMs id
+      summary: Recieve account linking notifications
+      description: Linking can be initiated from the DP or the CM side. In both the cases one will act as a client and other the server for this endpoint.
       parameters:
         - $ref:  '#/components/parameters/GatewayHeader'
       requestBody:
@@ -521,29 +522,66 @@ paths:
             schema:
               type: object
               oneOf:
-              - $ref: '#/components/schemas/InitiateLinkingRequest_1.0'
-              - $ref: '#/components/schemas/SucessfullLinkingNotification_1.0'
-              - $ref: '#/components/schemas/ForgetLinkRequest_1.0'
-                
+              - $ref: '#/components/schemas/LinkingSuccessNotification_1.0'
         required: true
       responses:
         200:
           description: ok
       security:
       - api_key: []
-                
-  /link/scheme:
-    get:
+      
+  /link:
+    post:
       tags:
+      - Consent Manager (CM)
       - Data Provider (DP)
-      summary: get the scheme which is supported by the DP for linking OAuth or CIBA
+      - Gateway
+      summary: Request for account linking.
+      description: Linking can be initiated from the DP or the CM side. In both the cases one will act as a client and other the server for this endpoint.
+      parameters:
+        - $ref:  '#/components/parameters/GatewayHeader'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              oneOf:
+              - $ref: '#/components/schemas/LinkAccountRequest_1.0'
+        required: true
       responses:
         200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
+          description: ok
+      security:
+      - api_key: []
+  
+    delete:
+      tags:
+      - Consent Manager (CM)
+      - Data Provider (DP)
+      - Gateway
+      summary: Forget account link.
+      description: User can choose to de-link the account. Can be initiated from the CM or the DP.
+      parameters:
+        - $ref:  '#/components/parameters/GatewayHeader'
+                
+      responses:
+        200:
+          description: ok
+      security:
+      - api_key: []
+                
+  # /link/scheme:
+  #   get:
+  #     tags:
+  #     - Data Provider (DP)
+  #     summary: get the scheme which is supported by the DP for linking OAuth or CIBA
+  #     responses:
+  #       200:
+  #         description: OK
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
                 
   # /link/callback:
   #   post:
@@ -558,39 +596,39 @@ paths:
   #             schema:
   #               type: object
       
-  /link/token:
-    post:
-      tags:
-      - Data Provider (DP)
-      summary: Get the token as the proof of linkage b/w DP and CM. Can also be used for polling in case of CIBA. Multiple tokens will be returned one for each account which is linked.
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  allOf:
-                  - $ref: '#/components/schemas/Account'
-                  properties:
-                    token:
-                      type: string
-                      description: token in the form of JWT.
+  # /link/token:
+  #   post:
+  #     tags:
+  #     - Data Provider (DP)
+  #     summary: Get the token as the proof of linkage b/w DP and CM. Can also be used for polling in case of CIBA. Multiple tokens will be returned one for each account which is linked.
+  #     responses:
+  #       200:
+  #         description: OK
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 type: object
+  #                 allOf:
+  #                 - $ref: '#/components/schemas/Account'
+  #                 properties:
+  #                   token:
+  #                     type: string
+  #                     description: token in the form of JWT.
       
-  /link/refresh:
-    post:
-      tags:
-      - Data Provider (DP)
-      summary: Refresh the token obtained.
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
+  # /link/refresh:
+  #   post:
+  #     tags:
+  #     - Data Provider (DP)
+  #     summary: Refresh the token obtained.
+  #     responses:
+  #       200:
+  #         description: OK
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
       
       
 
@@ -615,16 +653,19 @@ components:
   
     Account:
       type: object
-      description: refered to the arrangement with the service provider from which the data can be provided. Like savings a/c, FD, mobileNumber/landlineNumer with the the telecom provider, account with the diagnositcs lab, records held in the account with doctor.
+      description: refered to the arrangement with the service provider from which the data can be provided. Like savings a/c, FD, mobileNumber/landlineNumer with the telecom provider, account with the diagnositcs lab, records held in the account with doctor.
       properties:
         id:
           type: string
-          description: identifier of the account.
+          description: identifier of the account. This need not be the actual account no (like saving bank ac, folio number etc..), but can be an id which maps to the original account.
         type:
+          description: what kind of account this is. Completely DP defined.
           type: string
         description:
+          description: description of the above type.
           type: string
         otherDetails:
+          description: any details which DP might want to store in a key-value form. This will be shared back when as is in future requests/notification.
           type: array
           items:
             $ref: '#/components/schemas/KeyValuePair'
@@ -885,52 +926,50 @@ components:
           description: the name of the request type along with version. For example - GrantConsent_1.0
           type: string
 
-    InitiateLinkingRequest_1.0:
+    LinkAccountRequest_1.0:
       allOf:
-      - $ref: '#/components/schemas/Request'
+      - $ref: '#/components/schemas/Notification'
       properties:
+        userId:
+          description : property to inform the recieving party about the user who needs to be authenticated to do the linking. A DP can provide the cm-id of the user to recognozed user on the CM's platform, while a CM can capture the user-id which can be  can be a mobile no,  email address or any other custom id using which the user is uniquely identified on the DPs platform.
+          type: string
         # entity:
         #   $ref: '#/components/schemas/Entity'
-        scheme:
-          type: string
-          enum:
-            - OAUTH
-            - CIBA
+        # scheme:
+        #   type: string
+        #   enum:
+        #     - OAUTH
+        #     - CIBA
         accounts:
+          description: required only in case the linking is initiated from DP.
           type: array
           items:
             $ref: '#/components/schemas/Account'
             
-    SucessfullLinkingNotification_1.0:
+    LinkingSuccessNotification_1.0:
       allOf:
       - $ref: '#/components/schemas/Notification'
       properties:
         # entity:
         #   $ref: '#/components/schemas/Entity'
-        accountsLinkingStatus:
+        accountsLinked:
           type: array
           items:
-            # allOf:
-            # - $ref: '#/components/schemas/Account'
+            allOf:
+            - $ref: '#/components/schemas/Account'
             properties:
-              accountId:
-                type: string
-              status:
-                type: string
-                enum:
-                - LINKED
-                - FAILED
-              failureReason:
+              linkingToken:
+                description: a token issued by the DP to CM or vice-versa for a given user as the proof of linking account.
                 type: string
             
-    ForgetLinkRequest_1.0:
-      allOf:
-      - $ref: '#/components/schemas/Request'
-      properties:
-        accountIds:
-          type: array
-          items:
-            type: string
+    # ForgetLinkRequest_1.0:
+    #   allOf:
+    #   - $ref: '#/components/schemas/Request'
+    #   properties:
+    #     accountIds:
+    #       type: array
+    #       items:
+    #         type: string
       
     NewConsentRequest_1.0:
       allOf:
@@ -960,6 +999,12 @@ components:
           items:
             allOf:
             - $ref: '#/components/schemas/ConsentArtifact'
+            properties:
+              accounts:
+                description: An array of account linking tokens. Used to identify accounts using which the data need to be shared. A user can link multiple accounts but may choose to share data from few.
+                type: array
+                items:
+                  type: string
 
     DeniedConsentRequest_1.0:
       allOf:
@@ -1137,6 +1182,9 @@ components:
           description: list of tags
           items:
             type: string
+        userIdentifierType:
+          type: string
+          description: A user is identified by what kind of ID. This will be required when the request is initiated from the CM for linking DP. For now values for this can be MOBILE, E-MAIL, CUSTOM-ID, UPI-ID . More support to be added in future. This field will tell CM on what kind of value needs to be captured from the user.
         gatewayList:
           type: array
           description: list of gateways this entity is on
