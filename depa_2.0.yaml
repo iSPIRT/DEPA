@@ -161,12 +161,13 @@ paths:
                         description: list of gateways this entity is on
                         items:
                           type: string
-                      location:
+                      serviceEnpoint:
                         type: string
                         format: url
                         description: the url where the service is hosted.
                   status:
                     type: string
+                    description: tell the status of the service to the gateway. Example ACTIVE, IN-ACTIVE, MAINTENANCE
         required: true
       responses:
         200:
@@ -199,7 +200,7 @@ paths:
       - Data Provider (DP)
       - Gateway
       summary: Check if the consent-request can be fulfilled by the DP
-      description: CM to check if the ask placed by the DC is supported by the DP selected by the user
+      description: CM to check if the consent request placed by the DC is supported by the DP selected by the user
       parameters:
         - $ref:  '#/components/parameters/GatewayHeader'
       requestBody:
@@ -254,20 +255,10 @@ paths:
         - $ref:  '#/components/parameters/GatewayHeader'
         - name: consentRequestIds
           in: path
+          description: comma seperated list of consent request ids.
           required: true
           schema:
             type: string
-        
-      # requestBody:
-      #   content:
-      #       application/json:
-      #         schema:
-      #           type: object
-      #           properties:
-      #             consentRequestIds:
-      #               type: array
-      #               items:
-      #                 type : string
       responses:
         200:
           description: ok
@@ -340,14 +331,13 @@ paths:
               oneOf:
               - $ref: '#/components/schemas/GrantedConsentRequest_1.0'
               - $ref: '#/components/schemas/DeniedConsentRequest_1.0'
+        required: true
       responses:
         200:
          description: ok
         401:
           description: Authorization information is missing or invalid.
       security:
-      - dp_oauth:
-        - write:notifications
       - api_key: []
       
     put:
@@ -368,14 +358,13 @@ paths:
               - $ref: '#/components/schemas/RevokeConsentRequest_1.0'
               - $ref: '#/components/schemas/PauseConsentRequest_1.0'
               - $ref: '#/components/schemas/ResumeConsentRequest_1.0'
+        required: true
       responses:
         200:
          description: ok
         401:
           description: Authorization information is missing or invalid.
       security:
-      - dp_oauth:
-        - write:notifications
       - api_key: []
      
   /notification/data:
@@ -396,6 +385,7 @@ paths:
               - $ref: '#/components/schemas/DataReadyNotification_1.0'
               - $ref: '#/components/schemas/DataTxNotification_1.0'
               - $ref: '#/components/schemas/DataRxNotification_1.0'
+        required: true
       responses:
         200:
           description: ok
@@ -413,8 +403,10 @@ paths:
       parameters:
           - in: query
             name: partNo
+            description: if the data is provided in parts then correct part no to be specified. part numbers begin with 1.
             schema:
               type: integer
+            required: true
       responses:
         200:
           description: OK
@@ -459,11 +451,12 @@ paths:
       description: post the error details in relation to the request which happend before.
       requestBody:
         content:
-            application/json:
-              schema:
-                type: object
-                allOf:
-                - $ref: '#/components/schemas/ErrorNotification_1.0'
+          application/json:
+            schema:
+              type: object
+              allOf:
+              - $ref: '#/components/schemas/ErrorNotification_1.0'
+        required: true
       responses:
         200:
           description: ok
@@ -481,30 +474,18 @@ paths:
       description: post acknowledgement to the request.
       requestBody:
         content:
-            application/json:
-              schema:
-                type: object
-                allOf:
-                - $ref: '#/components/schemas/AckNotification_1.0'
+          application/json:
+            schema:
+              type: object
+              allOf:
+              - $ref: '#/components/schemas/AckNotification_1.0'
+        required: true
       responses:
         200:
           description: ok
       security:
       - api_key: []
                 
-  # /link:
-  #   post:
-  #     tags:
-  #     - Gateway
-  #     - Data Provider (DP)
-  #     summary: initiate the auth with the DP for linking eihter thru OAuth or CIBA
-  #     responses:
-  #       200:
-  #         description: OK
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: object
                 
   /notification/link:
     post:
@@ -570,68 +551,6 @@ paths:
       security:
       - api_key: []
                 
-  # /link/scheme:
-  #   get:
-  #     tags:
-  #     - Data Provider (DP)
-  #     summary: get the scheme which is supported by the DP for linking OAuth or CIBA
-  #     responses:
-  #       200:
-  #         description: OK
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: object
-                
-  # /link/callback:
-  #   post:
-  #     tags:
-  #     - Consent Manager (CM)
-  #     summary: Get a call back from the DP on sucessfull user authentication. This is to be used in the push mode of CIBA.
-  #     responses:
-  #       200:
-  #         description: OK
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: object
-      
-  # /link/token:
-  #   post:
-  #     tags:
-  #     - Data Provider (DP)
-  #     summary: Get the token as the proof of linkage b/w DP and CM. Can also be used for polling in case of CIBA. Multiple tokens will be returned one for each account which is linked.
-  #     responses:
-  #       200:
-  #         description: OK
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: array
-  #               items:
-  #                 type: object
-  #                 allOf:
-  #                 - $ref: '#/components/schemas/Account'
-  #                 properties:
-  #                   token:
-  #                     type: string
-  #                     description: token in the form of JWT.
-      
-  # /link/refresh:
-  #   post:
-  #     tags:
-  #     - Data Provider (DP)
-  #     summary: Refresh the token obtained.
-  #     responses:
-  #       200:
-  #         description: OK
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: object
-      
-      
-
 
 #--------------- SCHEMA DEFINITIONS -----------
 components:
@@ -639,9 +558,12 @@ components:
   
     Entity:
       type: object
+      required:
+        - id
+        - name
       properties:
         id:
-          description : id of the entity assigned by the gateway to uniquely identify the entity. Each gateway can have its own id assigned to a same entity.
+          description : id assigned by the gateway to uniquely identify the entity. Each gateway can have its own id assigned to a same entity.
           type: string
         name:
           type: string
@@ -650,16 +572,19 @@ components:
         website:
           type: string
   
-  
     Account:
       type: object
+      required:
+        - id
+        - type
+        - description
       description: refered to the arrangement with the service provider from which the data can be provided. Like savings a/c, FD, mobileNumber/landlineNumer with the telecom provider, account with the diagnositcs lab, records held in the account with doctor.
       properties:
         id:
           type: string
           description: identifier of the account. This need not be the actual account no (like saving bank ac, folio number etc..), but can be an id which maps to the original account.
         type:
-          description: what kind of account this is. Completely DP defined.
+          description: what kind of account this is. Completely DP defined. Like a savings bank account etc...
           type: string
         description:
           description: description of the above type.
@@ -673,6 +598,12 @@ components:
 
     Artifact:
       type: object
+      required:
+        - id
+        - schemaVersion
+        - time
+        - expiryTime
+        - signature
       properties:
         id:
           type: string
@@ -706,6 +637,10 @@ components:
 
     ConsentRequestArtifact:
       type: object
+      required:
+        - user
+        - requestedData
+        - purpose
       allOf:
         - $ref: '#/components/schemas/Artifact'
       properties:
@@ -722,9 +657,12 @@ components:
         
         requestedData:
           type: object
-          description: defines the kind of data which is requested. like saving account statement, doctors prescription etc...
+          required:
+            - type
+            - frequency
           properties:
             type:
+              description: defines the kind of data which is requested. like account statement, doctors prescription etc... There will a list of TYPES which will be available for a domain.
               type: string
             # contentTypeSupported:
             #   description: The data types which are supported by the DC for consumption of data. This will of the format as defined in https://tools.ietf.org/html/rfc7231#section-3.1.1.5 Example - text/plain or application/json or image/png
@@ -734,6 +672,9 @@ components:
             #   type: boolean
             dateRange:
               type: object
+              required:
+                - from
+                - to
               properties:
                 from:
                   type: string
@@ -752,9 +693,11 @@ components:
         #     - $ref: '#/components/schemas/dataType'
         purpose:
           type: object
+          description: defines the purpose for which this data is requested.
           required:
             - text
             - code
+            - refUri
           properties:
             text:
               type: string
@@ -765,6 +708,7 @@ components:
               type: string
               format: uri
         dataEraseAt:
+          description: an aproximate date given by the DC that when the requested data will be removed from his platform.
           type: string
           format: date-time
         # suggestedDataProviders:
@@ -779,6 +723,10 @@ components:
       
     ConsentArtifact:
       type: object
+      required:
+        - user
+        - consentDetails
+        - accounts
       allOf:
         - $ref: '#/components/schemas/Artifact'
       properties:
@@ -788,9 +736,17 @@ components:
           description: user who is giving the consent.identified by the consent managers id.
         consentDetails:
            $ref: '#/components/schemas/ConsentRequestArtifact'
+        accounts:
+          description: An array of account linking tokens. Used to identify accounts using which the data need to be shared. A user can link multiple accounts but may choose to share data from few.
+          type: array
+          items:
+            type: string
         
     TimeUnit:
       type: object
+      required:
+        - unit
+        - value
       properties:
         unit:
           type: string
@@ -806,6 +762,9 @@ components:
           
     KeyValuePair:
       type: object
+      required:
+        - key
+        - value
       properties:
         key:
           type: string
@@ -825,6 +784,12 @@ components:
     
     Request:
       type: object
+      required:
+        - reqId
+        - reqType
+        - time
+        - src
+        - dest
       properties:
         reqId:
           type: string
@@ -850,6 +815,12 @@ components:
         
     Notification:
       type: object
+      required:
+        - notificationId
+        - notificationType
+        - time
+        - src
+        - dest
       properties:
         notificationId:
           type: string
@@ -872,6 +843,12 @@ components:
         
     ErrorNotification_1.0:
       description: A error notification to inform about the error conditions to the entity from where the request originated.
+      type: object
+      required:
+        - refRequestId
+        - refRequestType
+        - errorCode
+        - errorMsg
       allOf:
       - $ref: '#/components/schemas/Notification'
       properties:
@@ -897,15 +874,14 @@ components:
           # 400 - schema version not supported
           # 401 - stale request
           # 402 - data life elapsed.
-          # 403 - signature not correct.
+          # 403 - signature validation failed.
           # 404 - user doesn't exists or is inactive
           
           # 5XX - for consent related erorrs
-          #  - schema version not supported
+          #  - consent schema version not supported
           # - consent id not present.
-          # - consent signature not correct.
-          # - link user before sharing consent.
-          # - consent signature not valid.
+          # - consent signature validation failed.
+
           
           
           # 9XX - for data related errors
@@ -916,6 +892,10 @@ components:
           
     AckNotification_1.0:
       description: An acknowledgement for recieving the original request.
+      type: object
+      required:
+        - refRequestId
+        - refRequestType
       allOf:
       - $ref: '#/components/schemas/Notification'
       properties:
@@ -927,19 +907,15 @@ components:
           type: string
 
     LinkAccountRequest_1.0:
+      type: object
+      required:
+        - userId
       allOf:
-      - $ref: '#/components/schemas/Notification'
+      - $ref: '#/components/schemas/Request'
       properties:
         userId:
-          description : property to inform the recieving party about the user who needs to be authenticated to do the linking. A DP can provide the cm-id of the user to recognozed user on the CM's platform, while a CM can capture the user-id which can be  can be a mobile no,  email address or any other custom id using which the user is uniquely identified on the DPs platform.
+          description : property to inform the recieving party about the user who needs to be authenticated to do the linking. A DP can provide the cm-id of the user to be recognozed on the CM's platform, while a CM can capture the user-id which can be a mobile no,  email address or any other custom id using which the user is uniquely identified on the DPs platform.
           type: string
-        # entity:
-        #   $ref: '#/components/schemas/Entity'
-        # scheme:
-        #   type: string
-        #   enum:
-        #     - OAUTH
-        #     - CIBA
         accounts:
           description: required only in case the linking is initiated from DP.
           type: array
@@ -947,14 +923,17 @@ components:
             $ref: '#/components/schemas/Account'
             
     LinkingSuccessNotification_1.0:
+      type: object
+      required:
+        - accountsLinked
       allOf:
       - $ref: '#/components/schemas/Notification'
       properties:
-        # entity:
-        #   $ref: '#/components/schemas/Entity'
         accountsLinked:
           type: array
           items:
+            required:
+              - linkingToken
             allOf:
             - $ref: '#/components/schemas/Account'
             properties:
@@ -962,16 +941,10 @@ components:
                 description: a token issued by the DP to CM or vice-versa for a given user as the proof of linking account.
                 type: string
             
-    # ForgetLinkRequest_1.0:
-    #   allOf:
-    #   - $ref: '#/components/schemas/Request'
-    #   properties:
-    #     accountIds:
-    #       type: array
-    #       items:
-    #         type: string
-      
     NewConsentRequest_1.0:
+      type: object
+      required:
+        - consentRequests
       allOf:
       - $ref: '#/components/schemas/Request'
       properties:
@@ -981,16 +954,10 @@ components:
             allOf:
             - $ref: '#/components/schemas/ConsentRequestArtifact'
       
-    # RevokeConsentRequest_1.0:
-    #   allOf:
-    #   - $ref: '#/components/schemas/Request'
-    #   properties:
-    #     consentRequestIds:
-    #         type: array
-    #         items: 
-    #           type: string
-    
     GrantedConsentRequest_1.0:
+      type: object
+      required:
+        - consentArtifacts
       allOf:
       - $ref: '#/components/schemas/Request'
       properties:
@@ -999,21 +966,20 @@ components:
           items:
             allOf:
             - $ref: '#/components/schemas/ConsentArtifact'
-            properties:
-              accounts:
-                description: An array of account linking tokens. Used to identify accounts using which the data need to be shared. A user can link multiple accounts but may choose to share data from few.
-                type: array
-                items:
-                  type: string
 
     DeniedConsentRequest_1.0:
+      type: object
+      required:
+        - consentRequestIds
       allOf:
       - $ref: '#/components/schemas/Request'
       properties:
-        deniedArtifactIds:
+        consentRequestIds:
           type: array
           description: ids of the consent request artifacts against which consent is denied by the user.
           items:
+            required:
+              - consentRequestId
             type: object
             properties:
               consentRequestId:
@@ -1022,29 +988,41 @@ components:
                 type: string
     
     RevokeConsentRequest_1.0:
+      type: object
+      required:
+        - consentIds
       allOf:
       - $ref: '#/components/schemas/Request'
       properties:
-        consentArtifactIds:
+        consentIds:
           type: array
           description: ids of the consent artifacts which are revoked.
           items:
+            required:
+              - consentId
             type: object
             properties:
-              askId:
+              consentId:
                 type: string
-              ravokeReason:
+              revokeReason:
+                description: text dexcription on why this is revoked.
                 type: string
             
     PauseConsentRequest_1.0:
+      type: object
+      required:
+        - consentArtifactIds
       allOf:
       - $ref: '#/components/schemas/Request'
       properties:
         consentArtifactIds:
           type: array
           items:
+            required:
+              - consentId
+              - pauseTill
             properties:
-              askId:
+              consentId:
                 type: string
                 description: ids of the consent artifacts which are paused.
               pauseReason:
@@ -1055,6 +1033,9 @@ components:
                 format: date-time
             
     ResumeConsentRequest_1.0:
+      type: object
+      required:
+        - consentArtifactIds
       allOf:
       - $ref: '#/components/schemas/Request'
       properties:
@@ -1066,6 +1047,10 @@ components:
             
     PrepareDataNotification_1.0:
       description: A notification from DC to DP that he can now start preparing the data.
+      type: object
+      required:
+        - consentId
+        - publicKeyDetails
       allOf:
       - $ref: '#/components/schemas/Notification'
       properties:
@@ -1113,6 +1098,16 @@ components:
     
     DataReadyNotification_1.0:
       description: A notification from DP to DC that data is ready to be fetched.
+      type: object
+      required:
+        - consentId
+        - sessionKey
+        - accessToken
+        - url
+        - contentType
+        - multiPart
+        - totalParts
+        - totalSizeInBytes
       allOf:
       - $ref: '#/components/schemas/Notification'
       properties:
@@ -1130,15 +1125,18 @@ components:
         contentType:
           type: string
           description: content type of the data which will be available from the endpoint.
-        multi-part:
+        multiPart:
           type: boolean
-        total-parts:
+        totalParts:
           type: integer
         totalSizeInBytes:
           type: integer
           
-      
     DataTxNotification_1.0:
+      type: object
+      required:
+        - cycle
+        - txState
       allOf:
       - $ref: '#/components/schemas/Notification'
       properties:
@@ -1152,10 +1150,12 @@ components:
             - STARTED
             - COMPLETED
             - ELAPSED
-        value:
-          type: number
       
     DataRxNotification_1.0:
+      type: object
+      required:
+        - cycle
+        - txState
       allOf:
       - $ref: '#/components/schemas/Notification'
       properties:
@@ -1169,11 +1169,12 @@ components:
             - TRIGGERED
             - COMPLETED
             - IN_PROGRESS
-        value:
-          type: number
           
     SearchResponse:
       type: object
+      required:
+        - tags
+        - userIdentifierType
       allOf:
       - $ref: '#/components/schemas/Entity'
       properties:
@@ -1209,16 +1210,6 @@ components:
 
 #---------- SECURITY SCHEMES ------------
   securitySchemes:
-    dp_oauth:
-      type: oauth2
-      flows:
-        authorizationCode:
-          authorizationUrl: /oauth
-          tokenUrl: /oauth/token
-          refreshUrl: /oauth/refresh
-          scopes:
-            write:notifications: post events
-            read:data: read data from the DP
     api_key:
       type: apiKey
       description: A key in the form of JWT shared by the gateeway with the entity at the time of regestration. 
