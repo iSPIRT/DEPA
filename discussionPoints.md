@@ -4,4 +4,9 @@
   - what's userIdentifierType?, 
   - what's vocabulary for tags
 * Simplify heartbeat API
-* signature should be at the bottom in consent requests?
+* what's "X-fwd-to"? we decided to put destn's in the body
+* consent artefact: 
+  - expirtyTime? and in 2 places?
+  - signature?
+  - separate data from permission block
+  - additionalParams??
