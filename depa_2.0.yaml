@@ -28,29 +28,29 @@ tags:
 
 paths:
 
-  /dp/{id}:
-    get:
-      tags:
-      - Gateway
-      summary: Get the data provider by id.
-      description: Get the data provider by id.
-      parameters:
-        - name : id
-          in : path
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: ok
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SearchResponse'
-        401:
-          description: Authorization information is missing or invalid.
-      security:
-      - api_key: []
+  # /dp/{id}:
+  #   get:
+  #     tags:
+  #     - Gateway
+  #     summary: Get the data provider by id.
+  #     description: Get the data provider by id.
+  #     parameters:
+  #       - name : id
+  #         in : path
+  #         required: true
+  #         schema:
+  #           type: string
+  #     responses:
+  #       200:
+  #         description: ok
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/SearchResponse'
+  #       401:
+  #         description: Authorization information is missing or invalid.
+  #     security:
+  #     - api_key: []
           
   /dp/tags:
     get:
@@ -86,6 +86,11 @@ paths:
       summary: find the data provider on the gateway
       description: lookup the entity by name/type on the gateway
       parameters:
+        - name: id
+          in: query
+          description: id of the data provider.
+          schema:
+            type: string
         - name: name
           in: query
           description: name of the entity.
@@ -137,20 +142,25 @@ paths:
       security:
       - api_key: []
 
-  /notification/heartbeat:
+  /heartbeat:
     post:
       tags:
-      - Gateway
-      summary: Recieve heartbeat.
-      description: recieve an heartbeat from the participating entities.
+      - Data Provider (DP)
+      - Data Consumer (DC)
+      - Consent Manager (CM)
+      summary: Get heartbeat.
+      description: get heartbeat from the entity.
       requestBody:
         content:
             application/json:
               schema:
                 type: object
-                allOf:
-                - $ref: '#/components/schemas/Notification'
+                # allOf:
+                # - $ref: '#/components/schemas/Notification'
                 properties:
+                  time:
+                    type: string
+                    format: date-time
                   entity:
                     type: object
                     allOf:
@@ -167,7 +177,7 @@ paths:
                         description: the url where the service is hosted.
                   status:
                     type: string
-                    description: tell the status of the service to the gateway. Example ACTIVE, IN-ACTIVE, MAINTENANCE
+                    description: tell the status of the service to the gateway. Example UP, DOWN
         required: true
       responses:
         200:
@@ -201,8 +211,8 @@ paths:
       - Gateway
       summary: Check if the consent-request can be fulfilled by the DP
       description: CM to check if the consent request placed by the DC is supported by the DP selected by the user
-      parameters:
-        - $ref:  '#/components/parameters/GatewayHeader'
+      # parameters:
+      #   - $ref:  '#/components/parameters/GatewayHeader'
       requestBody:
         content:
             application/json:
@@ -252,7 +262,7 @@ paths:
       summary: Check the status of the consent request.
       description: DC can check the status of the consent requests.
       parameters:
-        - $ref:  '#/components/parameters/GatewayHeader'
+        # - $ref:  '#/components/parameters/GatewayHeader'
         - name: consentRequestIds
           in: path
           description: comma seperated list of consent request ids.
@@ -294,8 +304,8 @@ paths:
       - Gateway
       summary: Post the consent-request.
       description: Used by the DC to post the consent request.
-      parameters:
-        - $ref:  '#/components/parameters/GatewayHeader'
+      # parameters:
+      #   - $ref:  '#/components/parameters/GatewayHeader'
       requestBody:
         content:
           application/json:
@@ -321,8 +331,8 @@ paths:
       - Gateway
       summary: Post consent artifact
       description: provide the consent artifact to the DP and DC. CM can either grant or deny the consent.
-      parameters:
-        - $ref:  '#/components/parameters/GatewayHeader'
+      # parameters:
+      #   - $ref:  '#/components/parameters/GatewayHeader'
       requestBody:
         content:
           application/json:
@@ -347,8 +357,8 @@ paths:
       - Gateway
       summary: update the consent artifact.
       description: update by either revoking, pausing or resumeing the consent.
-      parameters:
-        - $ref:  '#/components/parameters/GatewayHeader'
+      # parameters:
+      #   - $ref:  '#/components/parameters/GatewayHeader'
       requestBody:
         content:
           application/json:
@@ -495,8 +505,8 @@ paths:
       - Gateway
       summary: Recieve account linking notifications
       description: Linking can be initiated from the DP or the CM side. In both the cases one will act as a client and other the server for this endpoint.
-      parameters:
-        - $ref:  '#/components/parameters/GatewayHeader'
+      # parameters:
+      #   - $ref:  '#/components/parameters/GatewayHeader'
       requestBody:
         content:
           application/json:
@@ -519,8 +529,8 @@ paths:
       - Gateway
       summary: Request for account linking.
       description: Linking can be initiated from the DP or the CM side. In both the cases one will act as a client and other the server for this endpoint.
-      parameters:
-        - $ref:  '#/components/parameters/GatewayHeader'
+      # parameters:
+      #   - $ref:  '#/components/parameters/GatewayHeader'
       requestBody:
         content:
           application/json:
@@ -543,7 +553,13 @@ paths:
       summary: Forget account link.
       description: User can choose to de-link the account. Can be initiated from the CM or the DP.
       parameters:
-        - $ref:  '#/components/parameters/GatewayHeader'
+        - name: linkingToken
+          in: query
+          description: token to identify the account to delink. For multiple account de-linking multiple such requests will have to be made.
+          schema:
+            type: string
+          required: true
+      #   - $ref:  '#/components/parameters/GatewayHeader'
                 
       responses:
         200:
@@ -639,7 +655,8 @@ components:
       type: object
       required:
         - user
-        - requestedData
+        - dataType
+        - permission
         - purpose
       allOf:
         - $ref: '#/components/schemas/Artifact'
@@ -654,22 +671,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/KeyValuePair'
-        
-        requestedData:
+        dataType:
+              description: defines the kind of data which is requested. like account statement, doctors prescription etc... There will a list of TYPES which will be available for a domain.
+              type: array
+              items:
+                type: string
+        permission:
           type: object
           required:
-            - type
+            - dateRange
             - frequency
+            - dataEraseAt
           properties:
-            type:
-              description: defines the kind of data which is requested. like account statement, doctors prescription etc... There will a list of TYPES which will be available for a domain.
-              type: string
-            # contentTypeSupported:
-            #   description: The data types which are supported by the DC for consumption of data. This will of the format as defined in https://tools.ietf.org/html/rfc7231#section-3.1.1.5 Example - text/plain or application/json or image/png
+            # accessMode:
             #   type: string
-            # multiPartSupported:
-            #   description: does the DC support fetching of data in parts.
-            #   type: boolean
+            #   enum: [VIEW, STORE, QUERY, STREAM]
             dateRange:
               type: object
               required:
@@ -683,10 +699,14 @@ components:
                   type: string
                   format: date-time
             frequency:
-              type: object
-              description: freq at which data is required. if not given only one time sharing will be done.
-              allOf:
-              - $ref: '#/components/schemas/TimeUnit'
+              type: string
+              description: freq at which data is required. This will be in the form of cron expression. Example - "0 0 0 5,15 * ? *" which says At 00:00:00am, on the 5th and 15th day, every month
+            dataEraseAt:
+              description: an aproximate date given by the DC that when the requested data will be removed from his platform.
+              type: string
+              format: date-time
+              # allOf:
+              # - $ref: '#/components/schemas/TimeUnit'
         # requestedDataType:
         #   type: object
         #   allOf:
@@ -707,19 +727,6 @@ components:
             refUri:
               type: string
               format: uri
-        dataEraseAt:
-          description: an aproximate date given by the DC that when the requested data will be removed from his platform.
-          type: string
-          format: date-time
-        # suggestedDataProviders:
-        #   description: an hint to the user who all DP can fulfill this request.
-        #   type: array
-        #   items:
-        #     $ref: '#/components/schemas/Entity'
-        # publicKey:
-        #   type: string
-        #   description: base64 encoded public key shared by DC
-            
       
     ConsentArtifact:
       type: object
@@ -742,23 +749,23 @@ components:
           items:
             type: string
         
-    TimeUnit:
-      type: object
-      required:
-        - unit
-        - value
-      properties:
-        unit:
-          type: string
-          description: A unit of time
-          enum:
-            - HR
-            - DAY
-            - WEEK
-            - MONTH
-            - YEAR
-        value:
-          type: number
+    # TimeUnit:
+    #   type: object
+    #   required:
+    #     - unit
+    #     - value
+    #   properties:
+    #     unit:
+    #       type: string
+    #       description: A unit of time
+    #       enum:
+    #         - HR
+    #         - DAY
+    #         - WEEK
+    #         - MONTH
+    #         - YEAR
+    #     value:
+    #       type: number
           
     KeyValuePair:
       type: object
@@ -803,10 +810,12 @@ components:
           description: time of request
         src:
           type: string
-          description: name of the entity from where this request originated.
+          description: id of the entity from where this request originated.
         dest:
-          type: string
-          description: name of the entity for whom this request is for.
+          description: ids of the entity for whom this request is for.
+          type: array
+          items:
+            type: string
         #requestHeaders:
         #  type: object
         #  description: key-value pairs for additional properties.
@@ -834,10 +843,12 @@ components:
           description: time of notification
         src:
           type: string
-          description: name of the entity from where this notification originated.
+          description: id of the entity from where this request originated.
         dest:
-          type: string
-          description: name of the entity from whom this notification is for.
+          description: ids of the entity for whom this request is for.
+          type: array
+          items:
+            type: string
       discriminator:
         propertyName: type
         
@@ -1221,14 +1232,14 @@ components:
       name: accessToken
       in: query
 
-  parameters:
-    GatewayHeader:
-      in: header
-      name: X-fwd-to
-      description: Name of the entity to which the request needs to be forward. This can be comma seperated if request needs to be fwd to multiple entities.
-      schema:
-        type: string
-      required: true
+  # parameters:
+  #   GatewayHeader:
+  #     in: header
+  #     name: X-fwd-to
+  #     description: Name of the entity to which the request needs to be forward. This can be comma seperated if request needs to be fwd to multiple entities.
+  #     schema:
+  #       type: string
+  #     required: true
       
   responses:
     '200':
