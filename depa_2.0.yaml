@@ -74,8 +74,6 @@ paths:
                     description:
                       type: string
                       description: description of the tag. some example of tags - #bank , #hospital , #pharmacy etc ...
-        401:
-          description: Authorization information is missing or invalid.
       security:
       - api_key: []
       
@@ -137,26 +135,78 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/SearchResponse'
-        401:
-          description: Authorization information is missing or invalid.
+      security:
+      - api_key: []
+
+  /pk/sig:
+    get:
+      tags:
+      - Gateway
+      summary: Get public key for signature verification.
+      description: Get public key for signature verification.
+      parameters:
+        - name: entity-id
+          in: query
+          description: id of the entity assigned by the gateway.
+          schema:
+            type: string
+        - name: kid
+          in: query
+          description: key id.
+          schema:
+            type: string
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+      security:
+      - api_key: []
+
+  /pk/comm:
+    get:
+      tags:
+      - Gateway
+      summary: Get public key for mTLS.
+      description: Get public key for mTLS.
+      parameters:
+        - name: entity-id
+          in: query
+          description: id of the entity assigned by the gateway.
+          schema:
+            type: string
+        - name: kid
+          in: query
+          description: key id.
+          schema:
+            type: string
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
       security:
       - api_key: []
 
   /heartbeat:
-    post:
+    get:
       tags:
       - Data Provider (DP)
       - Data Consumer (DC)
       - Consent Manager (CM)
       summary: Get heartbeat.
       description: get heartbeat from the entity.
-      requestBody:
-        content:
+      responses:
+        200:
+          description: ok
+          content:
             application/json:
               schema:
                 type: object
-                # allOf:
-                # - $ref: '#/components/schemas/Notification'
                 properties:
                   time:
                     type: string
@@ -178,32 +228,9 @@ paths:
                   status:
                     type: string
                     description: tell the status of the service to the gateway. Example UP, DOWN
-        required: true
-      responses:
-        200:
-          description: ok
-        401:
-          description: Authorization information is missing or invalid.
       security:
       - api_key: []
       
-  # /getCertificate:
-  #   get:
-  #     tags:
-  #     - Data Provider (DP)
-  #     - Data Consumer (DC)
-  #     - Consent Manager (CM)
-  #     - Gateway
-  #     summary: Get the ceritificate.
-  #     description: The certificate acquired by a certification agency.
-  #     responses:
-  #       200:
-  #         description: OK
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: object
-  
   /consent-requests/is-supported:
     post:
       tags:
@@ -222,7 +249,9 @@ paths:
                   consentRequests:
                     type: array
                     items:
-                       $ref: '#/components/schemas/ConsentRequestArtifact'
+                      allOf:
+                       - $ref: '#/components/schemas/Artifact'
+                       - $ref: '#/components/schemas/ConsentRequestArtifact'
         required: true
       responses:
         200:
@@ -248,8 +277,6 @@ paths:
                       properties:
                         consentRequestId:
                           type: string
-        401:
-          description: Authorization information is missing or invalid.
       security:
       - api_key: []
       
@@ -291,8 +318,6 @@ paths:
                         - REVOKED
                         - PAUSED
                         - RESUMED
-        401:
-          description: Authorization information is missing or invalid.
       security:
       - api_key: []
       
@@ -304,8 +329,6 @@ paths:
       - Gateway
       summary: Post the consent-request.
       description: Used by the DC to post the consent request.
-      # parameters:
-      #   - $ref:  '#/components/parameters/GatewayHeader'
       requestBody:
         content:
           application/json:
@@ -313,13 +336,10 @@ paths:
               type: object
               oneOf:
               - $ref: '#/components/schemas/NewConsentRequest_1.0'
-              # - $ref: '#/components/schemas/RevokeConsentRequest_1.0'
         required: true
       responses:
-        200:
-          description: ok
-        401:
-          description: Authorization information is missing or invalid.
+        204:
+          description: no content
       security:
       - api_key: []
       
@@ -331,8 +351,6 @@ paths:
       - Gateway
       summary: Post consent artifact
       description: provide the consent artifact to the DP and DC. CM can either grant or deny the consent.
-      # parameters:
-      #   - $ref:  '#/components/parameters/GatewayHeader'
       requestBody:
         content:
           application/json:
@@ -343,10 +361,8 @@ paths:
               - $ref: '#/components/schemas/DeniedConsentRequest_1.0'
         required: true
       responses:
-        200:
-         description: ok
-        401:
-          description: Authorization information is missing or invalid.
+        204:
+         description: no content
       security:
       - api_key: []
       
@@ -357,8 +373,6 @@ paths:
       - Gateway
       summary: update the consent artifact.
       description: update by either revoking, pausing or resumeing the consent.
-      # parameters:
-      #   - $ref:  '#/components/parameters/GatewayHeader'
       requestBody:
         content:
           application/json:
@@ -370,10 +384,8 @@ paths:
               - $ref: '#/components/schemas/ResumeConsentRequest_1.0'
         required: true
       responses:
-        200:
-         description: ok
-        401:
-          description: Authorization information is missing or invalid.
+        204:
+         description: no content
       security:
       - api_key: []
      
@@ -397,14 +409,12 @@ paths:
               - $ref: '#/components/schemas/DataRxNotification_1.0'
         required: true
       responses:
-        200:
-          description: ok
-        401:
-          description: Authorization information is missing or invalid.
+        204:
+          description: no content
       security:
       - api_key: []
       
-  /data:
+  /dynamic-data-fetch-url:
     get:
       tags:
       - Data Provider (DP)
@@ -439,16 +449,12 @@ paths:
                     type: integer
                   data:
                     type: string
-        401:
-          description: Authorization information is missing or invalid.
         550:
           description: Consent expired.
         551:
           description: Consent revoked.
         552:
           description: Consent paused.
-      security:
-      - access_key: []
       
   /notification/error:
     post:
@@ -468,8 +474,8 @@ paths:
               - $ref: '#/components/schemas/ErrorNotification_1.0'
         required: true
       responses:
-        200:
-          description: ok
+        204:
+          description: no content
       security:
       - api_key: []
       
@@ -491,8 +497,8 @@ paths:
               - $ref: '#/components/schemas/AckNotification_1.0'
         required: true
       responses:
-        200:
-          description: ok
+        204:
+          description: no content
       security:
       - api_key: []
                 
@@ -505,8 +511,6 @@ paths:
       - Gateway
       summary: Recieve account linking notifications
       description: Linking can be initiated from the DP or the CM side. In both the cases one will act as a client and other the server for this endpoint.
-      # parameters:
-      #   - $ref:  '#/components/parameters/GatewayHeader'
       requestBody:
         content:
           application/json:
@@ -516,8 +520,8 @@ paths:
               - $ref: '#/components/schemas/LinkingSuccessNotification_1.0'
         required: true
       responses:
-        200:
-          description: ok
+        204:
+          description: no content
       security:
       - api_key: []
       
@@ -529,8 +533,6 @@ paths:
       - Gateway
       summary: Request for account linking.
       description: Linking can be initiated from the DP or the CM side. In both the cases one will act as a client and other the server for this endpoint.
-      # parameters:
-      #   - $ref:  '#/components/parameters/GatewayHeader'
       requestBody:
         content:
           application/json:
@@ -540,8 +542,8 @@ paths:
               - $ref: '#/components/schemas/LinkAccountRequest_1.0'
         required: true
       responses:
-        200:
-          description: ok
+        204:
+          description: no content
       security:
       - api_key: []
   
@@ -559,11 +561,9 @@ paths:
           schema:
             type: string
           required: true
-      #   - $ref:  '#/components/parameters/GatewayHeader'
-                
       responses:
-        200:
-          description: ok
+        204:
+          description: no content
       security:
       - api_key: []
                 
@@ -599,6 +599,9 @@ components:
         id:
           type: string
           description: identifier of the account. This need not be the actual account no (like saving bank ac, folio number etc..), but can be an id which maps to the original account.
+        alias:
+          type: string
+          description: the alias of the account which the user recognizes. It can be masked account number in case of financial accounts, or some alias which will help user to recognize the account.
         type:
           description: what kind of account this is. Completely DP defined. Like a savings bank account etc...
           type: string
@@ -658,8 +661,8 @@ components:
         - dataType
         - permission
         - purpose
-      allOf:
-        - $ref: '#/components/schemas/Artifact'
+      # allOf:
+      #   - $ref: '#/components/schemas/Artifact'
       properties:
         user:
           type: string
@@ -741,8 +744,24 @@ components:
           type: string
           format: email
           description: user who is giving the consent.identified by the consent managers id.
+        relationshipProof:
+          description: a token which user possess as the proof of bieng guardian/nominee of another user. This will only be provided if the user is playing a role of guardian/nominee. If not provided DP will not honour the consent and will throw error.
+          type: string
         consentDetails:
-           $ref: '#/components/schemas/ConsentRequestArtifact'
+          type: object
+          properties:
+            id:
+              type: string
+              description: id of the consent request
+            schemaVersion:
+              type: string
+              description: version of artifact.
+            time:
+              type: string
+              format: date-time
+              description: time of consent request.
+          allOf:
+           - $ref: '#/components/schemas/ConsentRequestArtifact'
         accounts:
           description: An array of account linking tokens. Used to identify accounts using which the data need to be shared. A user can link multiple accounts but may choose to share data from few.
           type: array
@@ -878,27 +897,23 @@ components:
           # Sample error codes and messages
           # 301 - msg delivery failed.
           # 302 - request not supported.
-           
-          
           
           # 4XX - for consent request related erorrs
           # 400 - schema version not supported
           # 401 - stale request
-          # 402 - data life elapsed.
-          # 403 - signature validation failed.
-          # 404 - user doesn't exists or is inactive
+          # 402 - signature validation failed.
+          # 403 - user doesn't exists or is inactive
+          # 404 - unknown data type
           
           # 5XX - for consent related erorrs
-          #  - consent schema version not supported
-          # - consent id not present.
-          # - consent signature validation failed.
-
-          
+          # 501 - consent schema version not supported
+          # 502 - consent id not present.
+          # 503 - consent signature validation failed.
+          # 504 - data type not supported
           
           # 9XX - for data related errors
-          # 901 - multi part not supported by DC.
-          # 902 - data not available
-          # 903 - data requested too soon. - when dc makes a prepare call too early before the next cycle.
+          # 901 - data not available
+          # 902 - consent doesn't exists or is paused.
 
           
     AckNotification_1.0:
@@ -949,8 +964,11 @@ components:
             - $ref: '#/components/schemas/Account'
             properties:
               linkingToken:
-                description: a token issued by the DP to CM or vice-versa for a given user as the proof of linking account.
+                description: a token issued by the DP to CM for a user as the proof of linking account.
                 type: string
+        relationshipProof:
+          description: a token issued by the DP to CM for a user as the proof of bieng a guardian/nominee of another user. This will only be provided if guardian/nominee is linking the account with their CM account.
+          type: string
             
     NewConsentRequest_1.0:
       type: object
@@ -963,6 +981,7 @@ components:
           type: array
           items:
             allOf:
+            - $ref: '#/components/schemas/Artifact'
             - $ref: '#/components/schemas/ConsentRequestArtifact'
       
     GrantedConsentRequest_1.0:
@@ -1124,15 +1143,15 @@ components:
       properties:
         consentId:
           type: string
-        sessionKey:
-          description: session key using which the accesstoken and url are encrypted. The session key is itself encrypted with the prulic key shared by the DC in prepare notification. This is base64 encoded value of the JWK. As  per rfc7517
-          type: string
+        # sessionKey:
+        #   description: session key using which the accesstoken and url are encrypted. The session key is itself encrypted with the prulic key shared by the DC in prepare notification. This is base64 encoded value of the JWK. As  per rfc7517
+        #   type: string
         accessToken:
           type: string
-          description: base64 encoding of encrypted JWT token. Encrypted by the session key.
-        url:
-          type: string
-          description: Dynamic URI generated by the DP from where the data can be fetched. This is encrypted by the session key.
+          description: base64 encoding of encrypted JWT token.
+        # url:
+        #   type: string
+        #   description: Dynamic URI generated by the DP from where the data can be fetched. This is encrypted by the session key.
         contentType:
           type: string
           description: content type of the data which will be available from the endpoint.
@@ -1226,21 +1245,7 @@ components:
       description: A key in the form of JWT shared by the gateeway with the entity at the time of regestration. 
       name: api_key
       in: header
-    access_key:
-      type: apiKey
-      description: A key shared by DP to DC to fetch the data.
-      name: accessToken
-      in: query
 
-  # parameters:
-  #   GatewayHeader:
-  #     in: header
-  #     name: X-fwd-to
-  #     description: Name of the entity to which the request needs to be forward. This can be comma seperated if request needs to be fwd to multiple entities.
-  #     schema:
-  #       type: string
-  #     required: true
-      
   responses:
     '200':
       description: OK
