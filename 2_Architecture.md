@@ -19,15 +19,14 @@ _A data provider (DP) is an entity that collects or generates digital data and s
 
 
 **_Data Consumer_**
-_A data Consumer(DC) is an entity that seeks digital data from the Data Principal, in order to provide services. The DC places the request for the need of data with the CM which triggers the process of consent collection from the Data Principal._ _DCs include hospitals, health technology companies, banks, financial technology companies, govt departments, employment exchanges -- any legal entity that is interested in delivering value to the Data Principal based on his data. These entities could have their own systems or use a third party service provider to be part of the ecosystem.__
+_A data Consumer(DC) is an entity that seeks digital data from the Data Principal, in order to provide services. The DC places the request for the need of data with the CM which triggers the process of consent collection from the Data Principal. DCs include hospitals, health technology companies, banks, financial technology companies, govt departments, employment exchanges or any entity that is interested in delivering services to the Data Principal based on his data. These entities could have their own systems or use a third party service provider to be part of the network._
 
 
 **_Consent Manager_**
-
 _A consent manager is an entity that acts as a consent collector for the user and mediates personal data flows from DPs to DCs. Our architecture allows multiple entities to play the role of a CM and each must have its own front-end (a mobile app, a Web app, or a human agent who interfaces with a mobile/Web app) for interacting with users. A CM cannot access data of users, even in encrypted form, unless it is also an DC and accesses information in that capacity. Its role is primarily to enable consent collection, based on which data is shared from DPs to DCs. It also enables discovery of DPs from which user data can be shared. Consent managers are a key mechanism for ensuring **privacy by design** in our architecture._
 
 **_Gateway_**
-        _A gateway enables DPs, DCs, and CMs to connect with each other and exchange information. Gateways are the key mechanism for enabling trust between the entities within this architecture. We also envision gateways to play the role of on-boarding, monitoring and auditing different entities in the ecosystem in a semi-automated manner; thus, they are also a key vehicle for our design principle of **transparency and accountability**. _
+_A gateway enables DPs, DCs, and CMs to connect with each other and exchange information. Gateways are the key mechanism for creating a network and enabling trust between the entities which join the network. We envision gateways to be sectoral in nature where they play the role of on-boarding, monitoring and auditing different entities in the network in a semi-automated manner; thus, they are also a key vehicle for our design principle of **transparency and accountability**._
         
 ## Architecture
 
@@ -38,8 +37,9 @@ The DEPA architecture has the following essential actions through which the whol
 * **Resolution** - Entities will have to resolve each other for having access to the metadata of the entity and the service endpoints where the connection can be established. Gateway will expose resolution functionality for the entities on its network.
 
 * **Linking Accounts** - A user needs to link his DPs with the consent manager. This linking can be initiated via the DP itself or the CM, in the latter case there will be a need to discover the DPs on the CMs interface before the linking can be initiated. The linking will enable exchange of tokens between the DP and the CM and build a trust relation between the two entities. The linking process will also enable the CM to know about the accounts which user has associated with it, this will be required at the time of consent collection.
+
 * **Consent collection and sharing**- The consent is collected by the CM and shared with DP and DC. Sharing of consent will enable the sharing of data as a next step. A precursor to giving consent is the linking of accounts with DP so that users can select the accounts and DPs from where the data needs to be shared with the DC. A User can select multiple DPs and accounts for a single consent.
-* 
+
 * **Data fetching**- Post the consent is shared with the DC, DC initiates the fetching of data from DP. The data transfer will be P2P between DP and DC but facilitated by the CM. 
 
 * **DP Discovery** - A DP discovery will only be needed in case the user initiates the linking from the CMs system. Since all the entities are on boarded onto the gateway, gateway will enable the discovery of DP via APIs. CM will use these APIs to assist users in discovering DPs.
