@@ -8,7 +8,7 @@ Prior work on DEPA includes the technology specifications of the [Account Aggreg
 
  1. [Introduction](/1_Introduction.md)
  2. [Architecture](/2_Architecture.md)
- 3. [Architecture Extendibility](/2_ArchitectureExtentions.md)
+ 3. [Architecture Extendibility](/3_ArchitectureExtentions.md)
  4. [APIs and Flows](/4_APIs.md)
 
 
