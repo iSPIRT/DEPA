@@ -1,3 +1,4 @@
+
 # 4.  APIs and Flows
 
 The APIs defined in this specification are both synchronous and async in nature. As a rule of thumb wherever there is a need to know the status of something in realtime, like getting status of linking or consent we use the synchronous APIs, while the rest of the specification use the asynchronous APIs.
@@ -41,26 +42,6 @@ Sequence Diagram
 
 ![discoveryFlow](seqDiagram/discoveryFlow.png "discoveryFlow")
 
-<!---
-```mermaid
-%%{init: {'securityLevel': 'loose', 'theme':'base'}}%%
-sequenceDiagram
-	User->>CM: Search for DP
-	opt Get tags for filtering
-		CM->>Gateway: /dp/tags
-		activate Gateway
-		Gateway-->>CM: return
-		deactivate Gateway
-	end
-	opt search for DP
-		CM->>Gateway: /dp
-		activate Gateway
-		Gateway-->>CM: return
-		deactivate Gateway
-	end
-		Note left of Gateway: searching can be done by id, name, tags and location
-```
---->
 
 **Endpoints**
 
@@ -96,26 +77,6 @@ A sample flow for establishment of mTLS connection between CM and DP. The same w
 
 ![mTLSestablishment](seqDiagram/mTLSestablishment.png "mTLSestablishment")
 
-<!---
-```mermaid
-%%{init: {'securityLevel': 'loose', 'theme':'base'}}%%
-sequenceDiagram
-	CM->>Gateway: /resolve
-	activate Gateway
-	Gateway-->>CM: return
-	deactivate Gateway
-
-	CM->>CM: add DP certificate in keystore
-
-	DP->>Gateway: /resolve
-	activate Gateway
-	Gateway-->>DP: return
-	deactivate Gateway
-
-	DP->>DP: add CM certificate in keystore
-	CM->DP: mTLS connection established
-``` 
---->
 
 Verification of the certificates
 
@@ -135,36 +96,6 @@ This will typically be the case when User login to his CMs account and does the 
 Sequence diagram
 
 ![accountLinking-CMSide](seqDiagram/accountLinking-CMSide.png "accountLinking-CMSide")
-
-<!---
-```mermaid
-%%{init: {'securityLevel': 'loose', 'theme':'base'}}%%
-sequenceDiagram
-	User->>CM: Initiate linking
-	CM->>DP: /link (LinkAccountRequest_1.0)
-	activate DP
-	DP-->>CM: return
-	deactivate DP
-	Note left of DP: User is uniquely identified @DP by email / mobile no / custom id
-
-	DP->>User: send notification sms/ivr/email for autntication
-	User->>DP: do autntication with DP, can be multifactor also
-	User->>DP: select accounts to link
-	
-	DP->>CM: /notification/link (LinkingSucessNotification_1.0)
-	activate CM
-	CM-->>DP: return
-	deactivate CM
-	
-	opt Check status of authentication
-		CM->>DP: /link/status
-		activate DP
-		DP-->>CM: return
-		deactivate DP
-	end
-	
-```
----> 
 
 
 Details of the flow
@@ -219,33 +150,6 @@ Sequence Diagram
 
 ![accountLinking-DPSide](seqDiagram/accountLinking-DPSide.png "accountLinking-DPSide")
 
-<!---
-```mermaid
-%%{init: {'securityLevel': 'loose', 'theme':'base'}}%%
-sequenceDiagram
-	User->>DP: Initiate linking,provide CM id
-	DP->>CM: /link (LinkAccountRequest_1.0)
-	activate CM
-	CM-->>DP: return
-	deactivate CM
-	Note right of DP: User is uniquely identified @DP by email / mobile no / custom id
-
-	CM->>User: send notification sms/ivr/email for autntication
-	User->>CM: do authentication and approve linking
-	
-	alt on sucessfull linking
-		CM->>DP: /notification/link (LinkingSucessNotification_1.0)
-		activate DP
-		DP-->>CM: return
-		deactivate DP
-	else on error
-		CM->>DP: /notification/link (LinkingErrorNotification_1.0)
-		activate DP
-		DP-->>CM: return
-		deactivate DP
-	end
-``` 
---->
 
 Details of the flow:-
 
@@ -293,54 +197,7 @@ Sequence Diagram
 
 ![consentFlow](seqDiagram/consentFlow.png "consentFlow")
 
-<!---
-```mermaid
-%%{init: {'securityLevel': 'loose', 'theme':'base'}}%%
-sequenceDiagram
-	User->>DC: Select service and provide CM id
-	DC->>CM: /consent-requests (NewConsentRequest_1.0)
-	activate CM
-	CM-->>DC: return
-	deactivate CM
-	
-	User->>CM: discover DP to fulfill request
 
-	opt check for supported data
-		CM->>DP: /consent-requests/isSupported
-		activate DP
-		DP-->>CM: return
-		deactivate DP
-	end
-	opt check status of consent requests
-		DC->>CM: /consent-requests/{requestIds}
-		activate CM
-		CM-->>DC: return
-		deactivate CM
-	end
-
-	alt on Grant
-		CM->>DC: /consent (GrantConsent_1.0)
-		activate DC
-		DC-->>CM: return
-		deactivate DC
-
-		CM->>DP: /consent (GrantConsent_1.0)
-		activate DP
-		DP-->>CM: return
-		deactivate DP
-	else on Denied
-		CM->>DC: /consent (DeniedConsent_1.0)
-		activate DC
-		DC-->>CM: return
-		deactivate DC
-
-		CM->>DP: /consent (DeniedConsent_1.0)
-		activate DP
-		DP-->>CM: return
-		deactivate DP
-	end
-``` 
---->
 
 Details of the consent flow-
 
@@ -411,37 +268,6 @@ Sequence Diagram
 
 ![dataFlow](seqDiagram/dataFlow.png "dataFlow")
 
-<!---
-```mermaid
-%%{init: {'securityLevel': 'loose', 'theme':'base'}}%%
-sequenceDiagram
-	DC->>DP: /notification/data (PrepareDataNotification_1.0)
-	activate DP
-	DP-->>DC: return
-	deactivate DP
-
-	DP->>DC: /notification/data (DataReadyNotification_1.0)
-	activate DC
-	DC-->DP: return
-	deactivate DC
-	
-	DC->>DP: /{dynamic-url-to fectch-data}
-	activate DP
-	DP-->>DC: return
-	deactivate DP
-
-	DC->>CM: /notification/data (DataRxNotification_1.0)
-	activate CM
-	CM-->>DC: return
-	deactivate CM
-	
-	DP->>CM: /notification/data (DataTxNotification_1.0)
-	activate CM
-	CM-->DP: return
-	deactivate CM
-	
-``` 
---->
   
 Details of the data flow-
 
