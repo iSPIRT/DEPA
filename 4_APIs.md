@@ -38,6 +38,10 @@ For the purpose of linking the DP with the CM we need to discover them first, th
 All the APIs within this flow are synchronous in nature as only the CM and the gateway are the 2 parties which are interacting with each other.
 
 Sequence Diagram
+
+![discoveryFlow](seqDiagram/discoveryFlow.png "discoveryFlow")
+
+<!---
 ```mermaid
 %%{init: {'securityLevel': 'loose', 'theme':'base'}}%%
 sequenceDiagram
@@ -56,6 +60,7 @@ sequenceDiagram
 	end
 		Note left of Gateway: searching can be done by id, name, tags and location
 ```
+--->
 
 **Endpoints**
 
@@ -88,6 +93,10 @@ Establishment of Mutual TLS is critical for any of the flows to work in DEPA. Us
 
 A sample flow for establishment of mTLS connection between CM and DP. The same will be applicable for establishing mTLS for CM and DC or DC and DP.
 
+
+![mTLSestablishment](seqDiagram/mTLSestablishment.png "mTLSestablishment")
+
+<!---
 ```mermaid
 %%{init: {'securityLevel': 'loose', 'theme':'base'}}%%
 sequenceDiagram
@@ -106,6 +115,7 @@ sequenceDiagram
 	DP->>DP: add CM certificate in keystore
 	CM->DP: mTLS connection established
 ``` 
+--->
 
 Verification of the certificates
 
@@ -122,8 +132,11 @@ A precursor to giving a consent is the linking of DP with Users CM account. The 
 
 This will typically be the case when User login to his CMs account and does the discovery of the DP with whom the linking has to be initiated.
   
-
 Sequence diagram
+
+![accountLinking-CMSide](seqDiagram/accountLinking-CMSide.png "accountLinking-CMSide")
+
+<!---
 ```mermaid
 %%{init: {'securityLevel': 'loose', 'theme':'base'}}%%
 sequenceDiagram
@@ -150,7 +163,8 @@ sequenceDiagram
 		deactivate DP
 	end
 	
-``` 
+```
+---> 
 
 
 Details of the flow
@@ -203,6 +217,9 @@ It is assumed that the user has logged on to his DPs account before initiating t
 
 Sequence Diagram
 
+![accountLinking-DPSide](seqDiagram/accountLinking-DPSide.png "accountLinking-DPSide")
+
+<!---
 ```mermaid
 %%{init: {'securityLevel': 'loose', 'theme':'base'}}%%
 sequenceDiagram
@@ -228,6 +245,7 @@ sequenceDiagram
 		deactivate DP
 	end
 ``` 
+--->
 
 Details of the flow:-
 
@@ -273,6 +291,9 @@ The consent flow starts with User approaching a DC to take some service, and the
 
 Sequence Diagram
 
+![consentFlow](seqDiagram/consentFlow.png "consentFlow")
+
+<!---
 ```mermaid
 %%{init: {'securityLevel': 'loose', 'theme':'base'}}%%
 sequenceDiagram
@@ -319,7 +340,7 @@ sequenceDiagram
 		deactivate DP
 	end
 ``` 
-
+--->
 
 Details of the consent flow-
 
@@ -387,6 +408,10 @@ The endpoint is hosted by DC and DP to inform about the consent lifecycle action
 Data flow is initiated by the DC to pull the data from the DP. The flow is initiated post the Data Principal has shared the consent artifact with the DC. DC can fetch the data till the consent is valid and meets the conditions defined by the consent artifact.
 
 Sequence Diagram
+
+![dataFlow](seqDiagram/dataFlow.png "dataFlow")
+
+<!---
 ```mermaid
 %%{init: {'securityLevel': 'loose', 'theme':'base'}}%%
 sequenceDiagram
@@ -416,6 +441,7 @@ sequenceDiagram
 	deactivate CM
 	
 ``` 
+--->
   
 Details of the data flow-
 
