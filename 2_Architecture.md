@@ -1,3 +1,20 @@
+## **Table of Contents**
+
+- [2. High Level architecture](#2-high-level-architecture)
+  - [Terminology](#terminology)
+  - [Architecture](#architecture)
+  - [Ecosystem and Network](#ecosystem-and-network)
+    - [Overlapping Networks](#overlapping-networks)
+  - [Responsibilities of the entities](#responsibilities-of-the-entities)
+    - [1. Consent Manager (CM)](#1-consent-manager-cm)
+    - [2. Data Provider (DP)](#2-data-provider-dp)
+    - [3. Data Consumer (DC)](#3-data-consumer-dc)
+    - [4. Gateway](#4-gateway)
+  - [5. **Consent artefact**](#5-consent-artefact)
+  - [6. Subscriptions and Notifications](#6-subscriptions-and-notifications)
+  - [7. Data Request/Response types](#7-data-requestresponse-types)
+    - [Data Request structure](#data-request-structure)
+    - [Data response structure](#data-response-structure)
 # 2. High Level architecture
 
 ## Terminology

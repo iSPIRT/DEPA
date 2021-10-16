@@ -1,3 +1,6 @@
+## **Table of Contents**
+- [1. Introduction](#1-introduction)
+  - [**Guiding Principles of our Architecture**](#guiding-principles-of-our-architecture)
 # 1. Introduction
 This document outlines a technical architecture for implementing personal data flows across domains and at  scale, keeping in mind evolving laws around personal data, data privacy and evolving  technology frameworks. The architecture has been developed in India as part of the DEPA 2.0 initiative. Although created for India, the design is general enough to be applicable anywhere in the world. We outline the different components and flows in our architecture and lay down the technical standard to be used by IT systems to participate in a real-world implementation of the architecture.
 

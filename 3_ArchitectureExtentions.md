@@ -1,3 +1,11 @@
+## **Table of Contents**
+
+- [3.  Architecture Extendibility](#3--architecture-extendibility)
+  - [1. Ecosystem level](#1-ecosystem-level)
+  - [2. Network level](#2-network-level)
+  - [3. Consent Artifact](#3-consent-artifact)
+  - [4. Data Request and Response](#4-data-request-and-response)
+  - [5. Events](#5-events)
 # 3.  Architecture Extendibility
 The current specifications described in this document act as the minimal set of APIs which need to be provided by the entities to make the entities interoperable for data sharing. While this may not suffice for many countries and sectors where there might be some additional requirements in setting up the ecosystem or network.
 

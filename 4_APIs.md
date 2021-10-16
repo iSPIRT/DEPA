@@ -1,4 +1,17 @@
+## **Table of Contents**
 
+- [4.  APIs and Flows](#4--apis-and-flows)
+  - [1.  Entity Resolution Flow](#1--entity-resolution-flow)
+  - [2.   Data Provider Discovery Flow](#2---data-provider-discovery-flow)
+  - [3.   Mutual TLS establishment](#3---mutual-tls-establishment)
+  - [4.  Linking flow](#4--linking-flow)
+    - [1.  CM Initiated](#1--cm-initiated)
+    - [2.   DP Initiated](#2---dp-initiated)
+  - [5.   Consent Flow](#5---consent-flow)
+  - [6.   Data Flow](#6---data-flow)
+  - [7.  Guardian flow](#7--guardian-flow)
+  - [8.   Nominee flow](#8---nominee-flow)
+  - [9.   Delegatee flow](#9---delegatee-flow)
 # 4.  APIs and Flows
 
 The APIs defined in this specification are both synchronous and async in nature. As a rule of thumb wherever there is a need to know the status of something in realtime, like getting status of linking or consent we use the synchronous APIs, while the rest of the specification use the asynchronous APIs.
