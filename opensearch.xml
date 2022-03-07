@@ -4,8 +4,8 @@
   <ShortName>DEPA World</ShortName>
   <Description>Search DEPA World</Description>
   <InputEncoding>UTF-8</InputEncoding>
-  <Image width="16" height="16" type="image/x-icon">https://depa.world/img/favicon.ico</Image>
-  <Url type="text/html" method="get" template="https://depa.world/search?q={searchTerms}"/>
-  <Url type="application/opensearchdescription+xml" rel="self" template="https://depa.world/opensearch.xml" />
-  <moz:SearchForm>https://depa.world/</moz:SearchForm>
+  <Image width="16" height="16" type="image/x-icon">https://depa.world/depa/img/favicon.ico</Image>
+  <Url type="text/html" method="get" template="https://depa.world/depa/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://depa.world/depa/opensearch.xml" />
+  <moz:SearchForm>https://depa.world/depa/</moz:SearchForm>
 </OpenSearchDescription>
