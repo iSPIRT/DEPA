@@ -1,0 +1,28 @@
+{
+	"version":"1.0",
+	"rules": [
+		{
+			"effect": "allow | deny",
+			"when": {
+				"key": "pc | mcc | domain | cidr | registeredWith | dataType",
+				"operator": "equal | notEqual | like | in",
+				"value": [
+					"",
+					""
+				]
+			}
+		},
+		{
+			"effect": "allow | deny",
+			"when": {
+				"key": "pc | mcc | domain | cidr | registeredWith | dataType",
+				"operator": "equal | notEqual | like | in",
+				"value": [
+					"",
+					""
+				]
+			}
+		}
+	],
+	"rulesOperator": "allOf | anyOf"
+}

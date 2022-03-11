@@ -6,11 +6,25 @@ Prior work on DEPA includes the technology specifications of the [Account Aggreg
 
 ## **Index**
 
- 1. [Introduction](/1_Introduction.md)
- 2. [Architecture](/2_Architecture.md)
- 3. [Architecture Extendibility](/3_ArchitectureExtentions.md)
- 4. [APIs and Flows](/4_APIs.md)
-
-
-
+- [Introduction](/docs/introduction.md)
+- [Terminology](/docs/terminology.md)
+- [Eosystem and Networks](/docs/ecosystemAndNetworks.md)
+- Registries
+    - [Lookup Registry](/docs/registeries/lookupRegistry.md)
+    - [Trust Registry and Policies](/docs/registeries/trustRegistry.md)
+    - [Schema Repository](/docs/registeries/schemaRegistry.md)
+    - [Purpose Code Registry](/docs/registeries/purposeCodeRegistry.md)
+- Specification
+    - Building Blocks
+        - [Consent Artifact](/docs/consentArtifact.md)
+        - [Data](/docs/data.md)
+        - [Events](/1_Introduction.md)
+    - [API specification](/docs/api.md)
+    - Flows
+        - [Discovery](/docs/flows/discovery.md)
+        - [Resolution](/docs/flows/resolution.md)
+        - [Trust establishment](/docs/flows/trust.md)
+        - [Linking Flow](/docs/flows/linking.md)
+        - [Consent Flow](/docs/flows/consent.md)
+        - [Data Flow](/docs/flows/data.md)
 

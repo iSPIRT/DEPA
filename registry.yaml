@@ -1,0 +1,161 @@
+openapi: 3.0.1
+info:
+  title: DEPA
+  description: Specification for trust registry. 
+  version: 2.0.0
+servers:
+- url: https://host:2020/depa/v2/registry/
+  description: Registry APIs location
+tags:
+- name: Registry
+
+paths:
+
+  /fetch/cm/:
+    get:
+      tags:
+      - Registry
+      summary: Get the dp by any of the parameters.
+      description: Get the dp details.
+      parameters:
+        - name : domain
+          in : query
+          required: false
+          schema:
+            type: string
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: pk
+          description: base64 encoded public key of the entity in JWK format.
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entity'
+        404:
+          description: not found or to many records found.
+
+
+  /fetch/dp/:
+    get:
+      tags:
+      - Registry
+      summary: Get the dp by any of the parameters.
+      description: Get the dp any of the parameters.
+      parameters:
+        - name : domain
+          in : query
+          required: false
+          schema:
+            type: string
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: pk
+          description: base64 encoded public key of the entity in JWK format.
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entity'
+        404:
+          description: not found or to many records found.
+
+  /fetch/dc/:
+    get:
+      tags:
+      - Registry
+      summary: Get the dc by any of the parameters.
+      description: Get the dp details.
+      parameters:
+        - name : domain
+          in : query
+          required: false
+          schema:
+            type: string
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: pk
+          description: base64 encoded public key of the entity in JWK format.
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entity'
+        404:
+          description: not found or to many records found.     
+
+#--------------- SCHEMA DEFINITIONS -----------
+components:
+  schemas:
+  
+    Entity:
+      type: object
+      required:
+        - name
+        - domain
+        - publicKeys
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+        domain:
+          type: string
+        website:
+          type: string
+        registeredOn:
+          type: string
+          format: date-time
+        registrationValidTill:
+          type: string
+          format: date-time
+        publicKeys:
+          description: base64 encoded public keys in JWK format.
+          type: array
+          items:
+            type: string
+        registries:
+          description: list of registries where this entity is listed.
+          type: array
+          items:
+            type: string
+        policy:
+          description: Policy (base64 encoded json ) defining if data flows are allowed or denied. By default everything is denied.
+          type: string
+          # Enforcement of these rules/polices to be done by consent managers. The language for defineing rules/policies should be able to achive the following
+          # - is the data sharing allowed from entity A to entity B
+          # - entity A can ask data for any purpose but not for purposeA, purposeB
+          # - entity X can ask data for only purposeA.
+          # - entity Y cant share data for purposeX
+          # - policies for cm ???
+          # - entityX dont need explicit consent from user to use the data for purpose X for data older than Z months/years
+        ttl:
+          description: caller can safely cache the entry for the given time to live in min.
+          type: integer
