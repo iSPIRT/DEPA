@@ -153,13 +153,6 @@ components:
           type: string
         website:
           type: string
-        status:
-          type: string
-          enum:
-            - active
-            - suspended
-            - cancelled
-            - in_active
         validFrom:
           type: string
           format: date-time 
