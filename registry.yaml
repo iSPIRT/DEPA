@@ -148,10 +148,10 @@ components:
           type: string
         website:
           type: string
-        registeredOn:
+        validFrom:
           type: string
-          format: date-time
-        registrationValidTill:
+          format: date-time 
+        validUntil:
           type: string
           format: date-time
         pkCertificate:
