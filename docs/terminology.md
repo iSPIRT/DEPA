@@ -3,15 +3,6 @@
 **_Data Principal_**
 _The person to whom the data belongs._
 
-**_Guardian_**
-_The person who is appointed by the Data Principal or by legal means to take actions on Data Principal's behalf._
-
-**_Delegatee_**
-_The person appointed by the Data Principal to take actions. A delegatee can delegate this to another delegatee if Data Principal allows._
-
-**_Nominee_**
-_The person who takes over the account of the Data Principal post his death._
-
 **_Data Provider_**
 _A data provider (DP) is an entity that collects or generates digital data and stores it in a software system. Essentially DPs are custodians of the Data Principal’s data. DPs could be clinical establishments like hospitals, health service providers, insurance companies, banks, tax authorities, schools, Universities, Govt. Agencies, etc. These establishments act as custodians of the Data Principal’s data and they rely on Consent managers for the purpose of collecting consent from the Data Principal for the purpose of data sharing.  A DP could host its own software system or could use a third party service provider to participate in the ecosystem._
 

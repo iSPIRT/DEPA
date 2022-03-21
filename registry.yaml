@@ -4,34 +4,50 @@ info:
   description: Specification for trust registry. 
   version: 2.0.0
 servers:
-- url: https://host:2020/depa/v2/registry/
+- url: https://host:2020/depa/registry/v2/
   description: Registry APIs location
 tags:
 - name: Registry
 
 paths:
-
-  /fetch/cm/:
+  /fetch/policy:
     get:
       tags:
       - Registry
-      summary: Get the dp by any of the parameters.
+      summary: Get the common policies for dc/dp/cm.
+      description: Get the common policies for dc/dp/cm.
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonPolicies'
+        404:
+          description: not found or to many records found.
+
+  /fetch/{fiduciaryType}:
+    get:
+      tags:
+      - Registry
+      summary: Get the fiduciary details by the given parameters.
       description: Get the dp details.
       parameters:
-        - name : domain
+        - name : fiduciaryType
           in : query
-          required: false
+          required: true
           schema:
             type: string
-        - name: name
+            enum:
+              - cm
+              - dc
+              - dp
+        - name : fiduciaryName
           in: query
-          required: false
           schema:
             type: string
-        - name: pk
-          description: base64 encoded public key of the entity in JWK format.
+        - name : domain
           in: query
-          required: false
           schema:
             type: string
       responses:
@@ -44,83 +60,85 @@ paths:
         404:
           description: not found or to many records found.
 
-
-  /fetch/dp/:
-    get:
-      tags:
-      - Registry
-      summary: Get the dp by any of the parameters.
-      description: Get the dp any of the parameters.
-      parameters:
-        - name : domain
-          in : query
-          required: false
-          schema:
-            type: string
-        - name: name
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: pk
-          description: base64 encoded public key of the entity in JWK format.
-          in: query
-          required: false
-          schema:
-            type: string
-      responses:
-        200:
-          description: ok
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Entity'
-        404:
-          description: not found or to many records found.
-
-  /fetch/dc/:
-    get:
-      tags:
-      - Registry
-      summary: Get the dc by any of the parameters.
-      description: Get the dp details.
-      parameters:
-        - name : domain
-          in : query
-          required: false
-          schema:
-            type: string
-        - name: name
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: pk
-          description: base64 encoded public key of the entity in JWK format.
-          in: query
-          required: false
-          schema:
-            type: string
-      responses:
-        200:
-          description: ok
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Entity'
-        404:
-          description: not found or to many records found.     
 
 #--------------- SCHEMA DEFINITIONS -----------
 components:
   schemas:
-  
+
+    CommonPolicies:
+      type: object
+      properties:
+        cmPolicies:
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/PolicyDetails'
+        dcPolicies:
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/PolicyDetails'
+        dpPolicies:
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/PolicyDetails'
+        ttl:
+          description: caller can safely cache the response for the given time in min.
+          type: integer
+       
+    PolicyDetails:
+      type: object
+      properties:
+        policy:
+          description: policy definition
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/PolicyDefinition'
+        policy_createdBy:
+          type: string
+        policy_createdOn:
+          type: string
+          format: date-time
+
+    PolicyDefinition:
+      type: object
+      properties:
+        version:
+          description: policy definition version
+          type: string
+        rules:
+          type: array
+          items:
+            properties:
+              effect:
+                type: string
+                enum:
+                  - allow
+                  - deny
+              when:
+                properties:
+                  key:
+                    type: string
+                  operator:
+                    type: string
+                    enum:
+                      - equal
+                      - notEqual
+                      - in
+                      - like
+                  value:
+                    type: string
+
+        rulesOperator:
+          type: string
+          enum:
+            - allOf
+            - anyOf
+
     Entity:
       type: object
       required:
         - name
         - domain
-        - publicKeys
+        - pkCertificate
       properties:
         name:
           type: string
@@ -136,8 +154,8 @@ components:
         registrationValidTill:
           type: string
           format: date-time
-        publicKeys:
-          description: base64 encoded public keys in JWK format.
+        pkCertificate:
+          description: base64 encoded public key certificates in JWK format.
           type: array
           items:
             type: string
@@ -146,16 +164,9 @@ components:
           type: array
           items:
             type: string
-        policy:
-          description: Policy (base64 encoded json ) defining if data flows are allowed or denied. By default everything is denied.
-          type: string
-          # Enforcement of these rules/polices to be done by consent managers. The language for defineing rules/policies should be able to achive the following
-          # - is the data sharing allowed from entity A to entity B
-          # - entity A can ask data for any purpose but not for purposeA, purposeB
-          # - entity X can ask data for only purposeA.
-          # - entity Y cant share data for purposeX
-          # - policies for cm ???
-          # - entityX dont need explicit consent from user to use the data for purpose X for data older than Z months/years
+        additionalParams:
+          description: json with additional meta-data if any.
+          type: object 
         ttl:
-          description: caller can safely cache the entry for the given time to live in min.
+          description: caller can safely cache the entry for the given ttl in min.
           type: integer
