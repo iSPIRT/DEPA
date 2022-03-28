@@ -10,7 +10,7 @@ tags:
 - name: Registry
 
 paths:
-  /fetch/policy:
+  /policy:
     get:
       tags:
       - Registry
@@ -26,14 +26,14 @@ paths:
         404:
           description: not found or to many records found.
 
-  /fetch/{fiduciaryType}:
+  /fetch/{entityType}:
     get:
       tags:
       - Registry
-      summary: Get the fiduciary details by the given parameters.
+      summary: Get the entity details by the given parameters.
       description: Get the dp details.
       parameters:
-        - name : fiduciaryType
+        - name : entityType
           in : query
           required: true
           schema:
@@ -42,7 +42,7 @@ paths:
               - cm
               - dc
               - dp
-        - name : fiduciaryName
+        - name : entityName
           in: query
           schema:
             type: string
@@ -117,6 +117,10 @@ components:
                 properties:
                   key:
                     type: string
+                    enum:
+                      - purposeCode
+                      - domain
+                      - cidr
                   operator:
                     type: string
                     enum:
@@ -154,13 +158,8 @@ components:
         validUntil:
           type: string
           format: date-time
-        pkCertificate:
+        publicKeyCertificate:
           description: base64 encoded public key certificates in JWK format.
-          type: array
-          items:
-            type: string
-        registries:
-          description: list of registries where this entity is listed.
           type: array
           items:
             type: string
