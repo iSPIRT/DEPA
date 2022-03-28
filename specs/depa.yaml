@@ -1,0 +1,110 @@
+openapi: 3.0.1
+info:
+  title: DEPA
+  description: DEPA API specs. 
+  version: 2.0.0
+externalDocs:
+  description: Find out more about Depa 2.0
+  url: https://www.google.com/search?q=depa
+servers:
+- url: https://host:2020/cm/depa/v2
+  description: CM APIs location
+- url: https://host:2020/dc/depa/v2
+  description: DC APIs location
+- url: https://host:2020/dp/depa/v2
+  description: DP APIs location
+tags:
+- name: Consent Manager (CM)
+  description: Endpoints hosted by Consent manager
+- name: Data Provider (DP)
+  description: Endpoints hosted by Data provider
+- name: Data Consumer (DC)
+  description: Endpoints hosted by Data consumer
+
+
+paths:
+
+  /consent:
+    post:
+      tags:
+      - Consent Manager (CM)
+      - Data Provider (DP)
+      - Data Consumer (DC)
+      summary: Post the consent events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/cloud.event'
+            # examples:
+            #     depa.consent.requested:
+            #       $ref: '#/components/examples/depa.consent.requested'
+            #     depa.consent.denied:
+            #       $ref: '#/components/examples/depa.consent.denied'
+      responses:
+        202:
+          description: Event accepted
+        400:
+          description: Bad request
+
+  /data:
+    post:
+      tags:
+      - Consent Manager (CM)
+      - Data Provider (DP)
+      - Data Consumer (DC)
+      summary: Post the data events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/cloud.event'
+      responses:
+        200:
+          description: ok
+        460:
+          description: Unable to verify the callers identity
+  
+  /{}:
+    get:
+      tags:
+        - Data Provider (DP)
+      summary: url location to fetch data from
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              example:
+            application/xml:
+              example:                
+        404:
+          description: not found
+        
+
+
+  /linking:
+    post:
+      tags:
+      - Consent Manager (CM)
+      - Data Provider (DP)
+      summary: Post the linking events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/cloud.event'
+      responses:
+        200:
+          description: ok
+          
+components:
+  schemas:
+    $ref: './schema.yaml'
+  examples:
+    $ref: './examples/examples.yaml'
+  
+

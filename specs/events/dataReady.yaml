@@ -1,0 +1,18 @@
+type: object
+required:
+  - consentId
+  - accessUrl
+  - accessToken
+properties:
+  consentId:
+    type: string
+  accessUrl:
+    type: url  
+  accessToken:
+    type: string
+    description: base64 encoded value of encrypted JWT.
+  multiPart:
+    type: boolean
+  totalSizeInBytes:
+    type: integer
+

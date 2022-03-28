@@ -1,0 +1,9 @@
+type: object
+required:
+  - consentId
+  - publicKey
+properties:
+  consentId:
+    type: string
+  publicKey:
+    description: base64 encoded value of the JWK. As  per rfc7517

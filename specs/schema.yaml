@@ -1,0 +1,46 @@
+# ---------- CONSENT EVENTS ------------------
+cloud.event:
+  $ref: "./cloudEvents.json"
+  # $ref: 'https://raw.githubusercontent.com/cloudevents/spec/v1.0.2/cloudevents/formats/cloudevents.json'
+
+# ---------- CLOUD EVENTS WRAPPER ------------------
+
+depa.event.consent.requested:
+  $ref: "./events/consentRequested.yaml"
+depa.event.consent.granted:
+  $ref: "./events/consentGranted.yaml"
+depa.event.consent.denied:
+  $ref: "./events/consentDenied.yaml"
+depa.event.consent.revoked:
+  $ref: "./events/consentRevoked.yaml"
+depa.event.consent.paused:
+  $ref: "./events/consentPaused.yaml"
+depa.event.consent.resume:
+  $ref: "./events/consentResume.yaml"
+depa.event.consent.unsupported:
+  $ref: "./events/consentUnsupported.yaml"
+depa.event.consent.aborted:
+  $ref: "./events/consentAborted.yaml"
+
+# ---------- DATA EVENTS ---------------------
+depa.event.data.initiate:
+  $ref: "./events/dataInitiate.yaml"
+depa.event.data.prepare:
+  $ref: "./events/dataPrepare.yaml"
+depa.event.data.unavailable: # could be temp or permanent.
+  $ref: "./events/dataUnavailable.yaml"
+depa.event.data.ready:
+  $ref: "./events/dataReady.yaml"
+depa.event.data.fetch:
+  $ref: "./events/dataFetch.yaml"
+depa.event.data.transmitted:
+  $ref: "./events/dataTransmitted.yaml"
+depa.event.data.recieved:
+  $ref: "./events/dataRecieved.yaml"
+depa.event.data.erased:
+  $ref: "./events/dataErased.yaml"
+depa.event.data.aborted:
+  $ref: "./events/dataAborted.yaml"
+
+# ---------- LINKING EVENTS ------------------
+
