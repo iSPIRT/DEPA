@@ -158,6 +158,13 @@ components:
         validUntil:
           type: string
           format: date-time
+        userIdentifiedBy:
+          type: string
+          enum:
+            - mobileNo
+            - email
+            - custom
+          description: id using which the user will be authenticated for linking with DP
         publicKeyCertificate:
           description: base64 encoded public key certificates in JWK format.
           type: array
