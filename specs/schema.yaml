@@ -43,4 +43,12 @@ depa.event.data.aborted:
   $ref: "./events/dataAborted.yaml"
 
 # ---------- LINKING EVENTS ------------------
+depa.event.link.initiate:
+  $ref: "./events/linkInitiate.yaml"
+depa.event.link.established:
+  $ref: "./events/linkEstablished.yaml"
+depa.event.link.aborted:
+  $ref: "./events/linkAborted.yaml"
+depa.event.link.revoked:
+  $ref: "./events/linkRevoked.yaml"
 
