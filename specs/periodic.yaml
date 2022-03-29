@@ -1,0 +1,27 @@
+  requestedDataTypes:
+    type: array
+    description: Schema locations for the requested data type.
+    items:
+      type: url
+  frequency:
+    type: string
+    description: freq at which data is required, required when fetchType=PERIODIC. This will be in the form of cron expression. Example - "0 0 0 5,15 * ? *" which says At 00:00:00am, on the 5th and 15th day, every month
+  dateRange:
+    type: object
+    description: periodic data sharing to be done between given date range
+    required:
+      - from
+      - to
+    properties:
+      from:
+        type: string
+        format: date-time
+      to:
+        type: string
+        format: date-time
+  dataEraseAt:
+    description: an aproximate date given by the DC that when the requested data will be removed from his platform.
+    type: string
+    format: date-time
+
+    

@@ -9,38 +9,11 @@ properties:
   user:
     type: string
     description: User identifier in the format <user>@<cm domain>
-  dateRange:
-    type: object
-    required:
-      - from
-      - to
-    properties:
-      from:
-        type: string
-        format: date-time
-      to:
-        type: string
-        format: date-time
-  frequency:
-    type: string
-    description: freq at which data is required. This will be in the form of cron expression. Example - "0 0 0 5,15 * ? *" which says At 00:00:00am, on the 5th and 15th day, every month
-  dataEraseAt:
-    description: an aproximate date given by the DC that when the requested data will be removed from his platform.
-    type: string
-    format: date-time
   purpose:
     type: object
-    description: defines the purpose for which this data is requested.
-    required:
-      - text
-      - code
-      - refUri
-    properties:
-      text:
-        type: string
-      code:
-        type: string
-        description: 'From the fixed set, documented at refUri'
-      refUri:
-        type: string
-        format: uri
+    $ref: "../purpose.yaml"
+  anyOf:
+    - $ref: '../oneTime.yaml'
+    - $ref: '../periodic.yaml'
+    - $ref: '../subscription.yaml'
+    

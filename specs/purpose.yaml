@@ -1,0 +1,15 @@
+    type: object
+    description: defines the purpose for which this data is requested.
+    required:
+      - text
+      - code
+      - refUri
+    properties:
+      text:
+        type: string
+      code:
+        type: string
+        description: 'From the fixed set, documented at refUri'
+      refUri:
+        type: string
+        format: uri
