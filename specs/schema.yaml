@@ -1,6 +1,12 @@
-# ---------- CONSENT EVENTS ------------------
+--- # ---------- CONSENT EVENTS ------------------
 cloud.event:
-  $ref: "./cloudEvents.json"
+  allOf:
+    - $ref: "./cloudEvents.json"
+  properties:
+    signature:
+      type: string
+      description: JWS format signature of the data/data_base64 block.
+
   # $ref: 'https://raw.githubusercontent.com/cloudevents/spec/v1.0.2/cloudevents/formats/cloudevents.json'
 
 # ---------- CLOUD EVENTS WRAPPER ------------------
@@ -51,4 +57,3 @@ depa.event.link.aborted:
   $ref: "./events/linkAborted.yaml"
 depa.event.link.revoked:
   $ref: "./events/linkRevoked.yaml"
-

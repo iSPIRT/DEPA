@@ -1,0 +1,36 @@
+BadEvent:
+  description: Bad Event response to the event recieved
+  type: object
+  properties:
+    eventId:
+      type: string
+      description: Event id of the request. Must be same value as sent in the request
+      example: 0b811819-9044-4856-b0ee-8c88035f8858'
+    eventType:
+      type: string
+      description: Event name
+      example: depa.event.consent.denied
+    timestamp:
+      type: string
+      format: date-time
+      description: Response timestamp
+      example: '2017-07-13T11:33:34.509Z' 
+    errorCode:
+      type: string
+      description: Error code indicating the problem with the request event
+    errorMsg:
+      type: string
+      description: Error message with additional details. Ensure no sensitive information is included in the error message.
+
+#---------- error Codes - errorMsg --------------
+# 401 - Event id ${event_id} is not unique
+# 402 - Event version ${version} not supported. Use ${supported_versions} versions
+# 403 - Depa version ${version} not supported. User ${supported_versions} versions
+# 404 - Identity of CM not verfiable.
+# 405 - Identity of DP not verfiable.
+# 406 - Identity of DC not verfiable.
+# 500 - Data block signature validation failed.
+
+
+
+

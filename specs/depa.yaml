@@ -52,10 +52,28 @@ paths:
                         - $ref: '#/components/schemas/depa.event.consent.revoked'
                         - $ref: '#/components/schemas/depa.event.consent.unsupported'
       responses:
-        202:
-          description: Event accepted
+        200:
+          description: OK
         400:
-          description: Bad request
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/BadEvent'
+        401:
+          description: Unauthorized Access
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+        405:
+          description: Method Not Allowed
+        500:
+          description: Internal Server Error
+        501:
+          description: Not Implemented
+        503:
+          description: Service Unavailable
 
   /data:
     post:
@@ -87,9 +105,27 @@ paths:
                         - $ref: '#/components/schemas/depa.event.data.aborted'
       responses:
         200:
-          description: ok
-        460:
-          description: Unable to verify the callers identity
+          description: OK
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/BadEvent'
+        401:
+          description: Unauthorized Access
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+        405:
+          description: Method Not Allowed
+        500:
+          description: Internal Server Error
+        501:
+          description: Not Implemented
+        503:
+          description: Service Unavailable
   
   /{}:
     get:
@@ -98,14 +134,27 @@ paths:
       summary: url location to fetch data from
       responses:
         200:
-          description: ok
+          description: OK
+        400:
+          description: Bad Request
           content:
             application/json:
-              example:
-            application/xml:
-              example:                
+              schema:
+                $ref: '#/components/responses/BadEvent'
+        401:
+          description: Unauthorized Access
+        403:
+          description: Forbidden
         404:
-          description: not found
+          description: Not Found
+        405:
+          description: Method Not Allowed
+        500:
+          description: Internal Server Error
+        501:
+          description: Not Implemented
+        503:
+          description: Service Unavailable
         
 
 
@@ -133,12 +182,31 @@ paths:
                         - $ref: '#/components/schemas/depa.event.link.aborted'
       responses:
         200:
-          description: ok
+          description: OK
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/BadEvent'
+        401:
+          description: Unauthorized Access
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+        405:
+          description: Method Not Allowed
+        500:
+          description: Internal Server Error
+        501:
+          description: Not Implemented
+        503:
+          description: Service Unavailable
           
 components:
   schemas:
     $ref: './schema.yaml'
-  examples:
-    $ref: './examples/examples.yaml'
-  
+  responses:
+    $ref: './responses.yaml'
 
