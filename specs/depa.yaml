@@ -36,12 +36,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/cloud.event'
-            # examples:
-            #     depa.consent.requested:
-            #       $ref: '#/components/examples/depa.consent.requested'
-            #     depa.consent.denied:
-            #       $ref: '#/components/examples/depa.consent.denied'
+              allOf:
+                - $ref: '#/components/schemas/cloud.event'
+                - type: object
+                  properties:
+                    data: 
+                      type: object
+                      anyOf:
+                        - $ref: '#/components/schemas/depa.event.consent.requested'
+                        - $ref: '#/components/schemas/depa.event.consent.denied'
+                        - $ref: '#/components/schemas/depa.event.consent.aborted'
+                        - $ref: '#/components/schemas/depa.event.consent.granted'
+                        - $ref: '#/components/schemas/depa.event.consent.paused'
+                        - $ref: '#/components/schemas/depa.event.consent.resume'
+                        - $ref: '#/components/schemas/depa.event.consent.revoked'
+                        - $ref: '#/components/schemas/depa.event.consent.unsupported'
       responses:
         202:
           description: Event accepted
@@ -60,7 +69,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/cloud.event'
+              allOf:
+                - $ref: '#/components/schemas/cloud.event'
+                - type: object
+                  properties:
+                    data: 
+                      type: object
+                      anyOf:
+                        - $ref: '#/components/schemas/depa.event.data.initiate'
+                        - $ref: '#/components/schemas/depa.event.data.prepare'
+                        - $ref: '#/components/schemas/depa.event.data.ready'
+                        - $ref: '#/components/schemas/depa.event.data.unavailable'
+                        - $ref: '#/components/schemas/depa.event.data.fetch'
+                        - $ref: '#/components/schemas/depa.event.data.transmitted'
+                        - $ref: '#/components/schemas/depa.event.data.recieved'
+                        - $ref: '#/components/schemas/depa.event.data.erased'
+                        - $ref: '#/components/schemas/depa.event.data.aborted'
       responses:
         200:
           description: ok
@@ -85,7 +109,7 @@ paths:
         
 
 
-  /linking:
+  /link:
     post:
       tags:
       - Consent Manager (CM)
@@ -96,7 +120,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/cloud.event'
+              allOf:
+                - $ref: '#/components/schemas/cloud.event'
+                - type: object
+                  properties:
+                    data: 
+                      type: object
+                      anyOf:
+                        - $ref: '#/components/schemas/depa.event.link.initiate'
+                        - $ref: '#/components/schemas/depa.event.link.established'
+                        - $ref: '#/components/schemas/depa.event.link.revoked'
+                        - $ref: '#/components/schemas/depa.event.link.aborted'
       responses:
         200:
           description: ok
