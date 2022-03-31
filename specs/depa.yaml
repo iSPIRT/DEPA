@@ -51,6 +51,11 @@ paths:
                         - $ref: '#/components/schemas/depa.event.consent.resume'
                         - $ref: '#/components/schemas/depa.event.consent.revoked'
                         - $ref: '#/components/schemas/depa.event.consent.unsupported'
+            examples:
+              depa.consent.requested_oneTime:
+                $ref: './examples/consentRequested_oneTime.yaml'
+              depa.consent.denied:
+                $ref: './examples/consentDenied.yaml'
       responses:
         200:
           description: OK
@@ -209,4 +214,5 @@ components:
     $ref: './schema.yaml'
   responses:
     $ref: './responses.yaml'
+
 

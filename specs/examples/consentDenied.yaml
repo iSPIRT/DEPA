@@ -1,0 +1,64 @@
+value:
+  id: 1234-sdff-2344-3444
+  source: urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66
+  specversion: "1.0.2"
+  type: "depa.consent.requested"
+  datacontenttype: "application/json"
+  subject: "Consent Request to share data for availing XYZ service"
+  time: 2018-04-05T17:31:00Z
+  data:
+    consentId: hdue-ser3-4g33-vf43
+    user: puneet@cm.co.in
+    reason: "No longer interested in services"
+  signature: eyJraWQiOiIwNzNhZmE2ZC05Yjk3LTQ3YzAtOTcyNS0yNDA2NTdmZmM0MzIiLCJhbGciOiJSUzI1NiJ9..sUzaMhv3FsHMKbz_4CVogkAJDlKSMe9O9lXBhq127su2Foa6ANekyYnm6-m5qOZYMAjukpj9TVV8Tg-Qlns6TznlPek5kyIf2p__0KuFaLVz85wXfv7CvpbfBLc-JvHLbCBk9AVbKEab5G8VQBLq8hX68U1CmTrm_7qEhTHj5P6N0f2Z05d3bUvGJ_FzVtA7kRGOjkRFY7fKTB8VZZH6jbbygzDgI3WK86eHrfGUILTOGzFjsFhSI8lUy5Or57oqiCwO-xSTbWN7mAdtE_8IZ-clTGTC8dLky2flaV4WTPOpmlSdzzTDdt8g0kcA0dbLcf0QUXAcB_TkcTkDcIvhBA
+
+
+# signature is in the JWS Compact Serialization format. ref https://www.rfc-editor.org/rfc/rfc7515#appendix-F
+# Here payload is the contents of the data element and need not be repeated again in the signature hence the compacted JWS format.
+
+# Header
+# {"kid":"073afa6d-9b97-47c0-9725-240657ffc432","alg":"RS256"}
+
+# signature
+# sUzaMhv3FsHMKbz_4CVogkAJDlKSMe9O9lXBhq127su2Foa6ANekyYnm6-m5qOZYMAjukpj9TVV8Tg-Qlns6TznlPek5kyIf2p__0KuFaLVz85wXfv7CvpbfBLc-JvHLbCBk9AVbKEab5G8VQBLq8hX68U1CmTrm_7qEhTHj5P6N0f2Z05d3bUvGJ_FzVtA7kRGOjkRFY7fKTB8VZZH6jbbygzDgI3WK86eHrfGUILTOGzFjsFhSI8lUy5Or57oqiCwO-xSTbWN7mAdtE_8IZ-clTGTC8dLky2flaV4WTPOpmlSdzzTDdt8g0kcA0dbLcf0QUXAcB_TkcTkDcIvhBA
+
+# private key
+# -----BEGIN RSA PRIVATE KEY-----
+# MIIEpQIBAAKCAQEAwQTm+iCOPLacG58lUW9TYqg3cnFeBp24naDeLI+lAM70mr4X
+# 3X3gWkQ+UbsMiLzcDSvqBxPOdQnZsrr7VmpWhpn0+0fneO+XI9Lml9eNPu2pza/7
+# DSKMiXFASEUjh3Sw77bXv+5SW/7hvO5xwfbv/Bzw3RTTZmAILqTIspLSDseHv/gu
+# NUIm2vtljotzGzEPctR/rrKbXw6XtO7kW2UXrrHXQbsMxQmjzGzi0YMks8BXF0Zu
+# bsWQlkdj2D8NUr0fgo2cJ9YlJaa+9w47CiUM1FtjPQAKsxbcZfkonlvptXkgbqpn
+# xCB0SmjRoFRJwnTHs+DdrBvDAehG2DVVzzLm/QIDAQABAoIBAB+qbeOjyvymOg7E
+# rtBLrZK7kCUj+M39usI5ba7tKJ/CVBoS4kLBxOMU27h4Ma05IUy+je1NUDXz62rJ
+# XDR9djvXhCZj/H3i/e5a9N5STDzXrAovkHCY4L98/JPJVp6BWV8U+xOPcKQ2Y32l
+# t19KjhfT/lFMJQZgQ4ILd1WR2rOhD3NiBLwMam/JbQ2pi5znJblm+L8qxY4toRuh
+# VCi94WtjVw9fwBtvAUWMikwxFx2PmTIeGG0BUfQOxqLFmnXVs9t02ocDA80MKyoN
+# FALYHlkNK/hqKLj3QklRmtXWAPV76zNmwfrzvzsyWa7HlWqwAV6J1faWDBcNqQmm
+# jy9YI80CgYEA/lHQB7s4sUv1L9FJJ3YHwZIccYhcm77PvgxKBdcy9eTv+TalJp8S
+# bM7ymzCl7PADOhke8pD7xhcieYVbG2wcWKTid3G8aS56KxEpfYJjQNW6fEyKTbMq
+# AQo275rj55ahjViYQG0sXkVLRsWcRWW1QMpGGSCn8HN73lXPpiRvvicCgYEAwktm
+# B8aXX2kKzyF+bPwXI07PGZ10SrNuo3fm5mtytaKwvLMqrIXpEhIwaoRMZ4lKlXCW
+# XP1wKYfBC+gy6PxEhv67Y+w/fmwlkIUJGN5J0f+r9yXnJrbcItS9wCp9XM9h2Sb2
+# GJme6Y9Dup9inu6bkniq6Dfk35YKb03DJ0CdzDsCgYEAv64EAD/A/AhG9VJlM6PH
+# NsMcQwnG2vAW/aOfiwVmeGSj5g6krRZJuc7Elek1tf40QG68n5Bc4zF+n16+i02R
+# k9I6ilIj8pbAJ4OY5OsISc6M7rB1sRhveTcsrqzsRxmGC9WRc0WVojvR/7ZjEP8W
+# fI24BapSSW2RF8NPbWaa/hMCgYEAhHj8HBkfZIIuSIPBu3U2IXC+a+ybOcOVkAdU
+# e46PK6C9eCuA0RiMjTGxqS6DGaTWIYYeP1DdhLN2wDOVYp19670K71pJAF2kTyEl
+# zrrhAjmcempxbEgJWAZNShSuXPVY9cJG0QcM/pobx8aca1is4fU8MhDKEFgwzSrs
+# AHtiG7kCgYEA+j1HSjMo3goCJ5ebWq7YdofZwJHbN5qJJXdMNC8dSB0cepJtlPdu
+# M+FRrACRGgbz/f1G5qbVWvx2iu+YHn/GsmniRlCgnPhyqFy+aiXFj5Wkd8xx60i4
+# jVJqOevRpkKIpC3c3rTiaK0WdcQdwXB8j9a/SOskNfo+dt0ekvfTcXk=
+# -----END RSA PRIVATE KEY-----
+
+# Public key
+# -----BEGIN PUBLIC KEY-----
+# MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwQTm+iCOPLacG58lUW9T
+# Yqg3cnFeBp24naDeLI+lAM70mr4X3X3gWkQ+UbsMiLzcDSvqBxPOdQnZsrr7VmpW
+# hpn0+0fneO+XI9Lml9eNPu2pza/7DSKMiXFASEUjh3Sw77bXv+5SW/7hvO5xwfbv
+# /Bzw3RTTZmAILqTIspLSDseHv/guNUIm2vtljotzGzEPctR/rrKbXw6XtO7kW2UX
+# rrHXQbsMxQmjzGzi0YMks8BXF0ZubsWQlkdj2D8NUr0fgo2cJ9YlJaa+9w47CiUM
+# 1FtjPQAKsxbcZfkonlvptXkgbqpnxCB0SmjRoFRJwnTHs+DdrBvDAehG2DVVzzLm
+# /QIDAQAB
+# -----END PUBLIC KEY-----
+

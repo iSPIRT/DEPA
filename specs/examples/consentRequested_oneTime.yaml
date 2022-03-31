@@ -1,0 +1,72 @@
+value:
+  id: 1234-sdff-2344-3444
+  source: urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66
+  specversion: "1.0.2"
+  type: "depa.consent.requested"
+  datacontenttype: "application/json"
+  subject: "Consent Request to share data for availing XYZ service"
+  time: 2018-04-05T17:31:00Z
+  data:
+    consentId: hdue-ser3-4g33-vf43
+    user: puneet@cm.co.in
+    purpose:
+      text: Data requested to recoment insurenace plans.
+      code: P18342
+      refUri: https://host/purposeCodeLibrary/v2/P18342
+    fetch:
+      requestedDataTypes: [ https://host/financialDataExchange/v2/accountStatement.json ]
+      dateRange:
+        from: 2018-04-05T17:31:00Z
+        to: 2018-06-05T17:31:00Z
+      dataEraseAt: 2022-04-05T17:31:00Z
+  signature: eyJraWQiOiJkZmNkNzQ1OS01YmM5LTRkMTctYmMwMS05MDZiNWYzN2FlNzgiLCJhbGciOiJSUzI1NiJ9..YpNLj5EpYm2PufeIaWloj8JYyEShVKeXelAQ8KA5ubjsAkKCCZOC_WjOFl0HmVBVS40E7IwtQ3apg8JaWQjCcNm630UQNQPW8ixW3P7veLU8jlTe1OK6e8u2L48uejio4_vEeE4feyEWkheRHNFtisIQtRkZmwFtquRbFKazTkCvZGTDBni7UM4B9BUsFTzgb4DaWr51iDTAlqUvEHECc4sHeGmiYhfCmGLyZQp25RySF3Re3NNZ5XexjlfkHRT-ew_31HCFzIWIpM6elMsC3G4fmmWrVrzcH34xvKOce4-ykxwhYvIlNa-7IjldT7IsWL1L7SGdjKbtERuthy1zDw
+
+
+# signature is in the JWS Compact Serialization format. ref https://www.rfc-editor.org/rfc/rfc7515#appendix-F
+# Here payload is the contents of the data element and need not be repeated again in the signature hence the compacted JWS format.
+
+# Header
+# {"kid":"dfcd7459-5bc9-4d17-bc01-906b5f37ae78","alg":"RS256"}
+
+# signature
+# YpNLj5EpYm2PufeIaWloj8JYyEShVKeXelAQ8KA5ubjsAkKCCZOC_WjOFl0HmVBVS40E7IwtQ3apg8JaWQjCcNm630UQNQPW8ixW3P7veLU8jlTe1OK6e8u2L48uejio4_vEeE4feyEWkheRHNFtisIQtRkZmwFtquRbFKazTkCvZGTDBni7UM4B9BUsFTzgb4DaWr51iDTAlqUvEHECc4sHeGmiYhfCmGLyZQp25RySF3Re3NNZ5XexjlfkHRT-ew_31HCFzIWIpM6elMsC3G4fmmWrVrzcH34xvKOce4-ykxwhYvIlNa-7IjldT7IsWL1L7SGdjKbtERuthy1zDw
+
+# private key
+# -----BEGIN RSA PRIVATE KEY-----
+# MIIEpAIBAAKCAQEAzYqYwJrdmanwaQ6a95GecFcn7pUk+S/6WYZTdWJUiXMRVpbN
+# Ot+kVAWL+jomejOe2K/iWJvTmIMS/7G/FL7im079pP2GfL8ZfwcaHYzDCcaoHe9K
+# X5/FL9yuoI5R6pzCgG+li1C0CvMSSw9BMmzCwQygQM2FNiPd3jNHHLKBMyStk3IU
+# cEWS43lsoY59BnoQbCDTMDW7ACRA/cGaGtMQYtZJ0+Jlol/Gu8CHRgj46Vh2L9y9
+# LDAwN0qSyoLMR0LWNM5g4vHwfuLamigHyoTknzHlyyxkli/1TtRvB/e4/BsNajPo
+# /eL3thBtVDlHKtxdnKgNZhimxDUcQUFPmBvpwQIDAQABAoIBAAFtHcaStR074JI8
+# AJzjs+iZpufkftnkGIgcZtJXVSL8AMMpkN3hfw2cJ0SGkzYFCaE1fH+XyIh1lUH+
+# 25Sy59nt16Ik5Js0QrPV5lEma0OOqb/U/MczxUVQwD0pmvhyZwtNviV5jS2whBm2
+# KVzAVXmHKeaU6/dZHDgDl+eVSuB179D7OaY3ax2RY2yELr8SOdniVe0dMBaIp2mZ
+# SmZyXVKCdKlMMeElvqlG3dH9NeOOQ23wA5WNuJqNVFpf3LI0Oz48y1H0Ds84HG+p
+# WBefWufB1Y6H73+CnaOdhIiag967XQs/rPFVNJYai1Oz+E9oKkv1O02JNzKknPiC
+# ekl/+cUCgYEA+WFrm9aToEiesiOQrEW94teOTdclrxqY02VdBYJrW++jDJRI2FLT
+# Q0O6k3zh1lYdPcOdDYF0/E0U3Q0Wky5scwECKy5stt7GCQmSysz5OWsIDNqqml3W
+# I5kDSJo2h8LIrD7li02eMfP9WcDoEkYyFdKFI7qndQXG8WkA+n6D8+MCgYEA0v9I
+# TzrPAZQalCDuCuURK7E34nXU+aQgycnrkBaw2itL3wT77Onv5Aj6a05mrbYk2TbV
+# 8cKu8wJmG4KeYYlXrjGX9FciZCSc3lMZYRQZgcV60Pnv51aP2I4acMq/3lGvYII9
+# MQh7/Gwv5qJyDjyIJjDpZq1HSdnxOFdONFovBQsCgYBGUOjVrSA9Dpzon8yYNqX/
+# A0aVvjda80XqPWeIOSjqaFxyHJGZpWj6S2udUJYhKHDgTHrJJxqEVXuvhJQ79dgQ
+# aVViNZnjylbOj4t7cWZIgVxou3NlSVYq/WcGnq0HhK2um6F/sOgNL73dA96r4G0Y
+# 6B4wX939yh45TaFAAFJWfwKBgQCspx4JTwrytLkm+ucuXRC22vXqxha3DDmURTkP
+# l7GxZHpaDN8ElsyooTwgsG/Ot1vhrkBU6sRzr0PUQQbOsy7fKE+6Lc7DeT4vonoC
+# +QqCKRD9jXdkqm1ce7NhFlb4WYkThJ8Dz3h9Lh3oMIb55UhXT/C9Bw9te/wp6S7i
+# IeWVzwKBgQCgFCU+qz9om1FxYaocX6ebJnx2Z/7gtYBZ+53gdzCnCWVm97Aq+kjH
+# gqYLtjMCnTtN9rcz5vlRQX8+otvWW4Z6ZObrn8C2zcDWHnn/adQz8IqFwoBk8KRd
+# J2OKk01Pl6p4BhA17WFy0tyxrCg+DcYNdHiLcR8Dyg0SDLJWGwpcww==
+# -----END RSA PRIVATE KEY-----
+
+# public key
+# -----BEGIN PUBLIC KEY-----
+# MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzYqYwJrdmanwaQ6a95Ge
+# cFcn7pUk+S/6WYZTdWJUiXMRVpbNOt+kVAWL+jomejOe2K/iWJvTmIMS/7G/FL7i
+# m079pP2GfL8ZfwcaHYzDCcaoHe9KX5/FL9yuoI5R6pzCgG+li1C0CvMSSw9BMmzC
+# wQygQM2FNiPd3jNHHLKBMyStk3IUcEWS43lsoY59BnoQbCDTMDW7ACRA/cGaGtMQ
+# YtZJ0+Jlol/Gu8CHRgj46Vh2L9y9LDAwN0qSyoLMR0LWNM5g4vHwfuLamigHyoTk
+# nzHlyyxkli/1TtRvB/e4/BsNajPo/eL3thBtVDlHKtxdnKgNZhimxDUcQUFPmBvp
+# wQIDAQAB
+# -----END PUBLIC KEY-----
