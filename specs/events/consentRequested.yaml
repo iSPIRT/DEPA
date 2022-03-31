@@ -1,3 +1,4 @@
+depa.event.consent.requested:
 type: object
 required:
   - consentId
@@ -12,8 +13,13 @@ properties:
   purpose:
     type: object
     $ref: "../purpose.yaml"
-  anyOf:
-    - $ref: '../oneTime.yaml'
-    - $ref: '../periodic.yaml'
-    - $ref: '../subscription.yaml'
-    
+  fetch:
+    type: object
+    anyOf:
+    - $ref: "../oneTime.yaml"
+    - $ref: "../periodic.yaml"
+    - $ref: "../subscription.yaml"
+  dataEraseAt:
+    description: an aproximate date given by the DC that when the requested data will be removed from his platform.
+    type: string
+    format: date-time
