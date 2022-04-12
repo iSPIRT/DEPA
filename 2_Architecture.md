@@ -131,7 +131,7 @@ The role of a gateway includes the following:
 
 ## 5. **Consent artefact**
 
-In our framework, consent is always electronically sought from the user and is captured using a document called the _Consent Artefact_. The notion of a consent artefact is defined in a [technical standard](http://dla.gov.in/sites/default/files/pdf/MeitY-Consent-Tech-Framework%20v1.1.pdf) released by the [Ministry of Electronics and Information Technology (MEITY)](https://meity.gov.in/). 
+In our framework, consent is always electronically sought from the user and is captured using a document called the _Consent Artefact_. The notion of a consent artefact is defined in a [technical standard](https://dla.gov.in/sites/default/files/pdf/MeitY-Consent-Tech-Framework%20v1.1.pdf) released by the [Ministry of Electronics and Information Technology (MEITY)](https://meity.gov.in/). 
 
 In DEPA, we use a JSON version of the consent artefact schema of that standard. 
 
