@@ -1,5 +1,4 @@
-# Trust Registeries
-
+# Trust Registries
 
 ## Policies
 
@@ -38,14 +37,13 @@ Policies in the turn registry are defined in a JSON format. These policies are a
 
 ### JSON policy structure
 
-| Properties | Description |
-|:--- |:--- |
-| version | version of the policy |
-| rules | array of rules defined in this policy |
-| rulesOperator | operator to be used between multiple rules. Either match all or match any  |
-| effect | if the condition is met should we allow or deny the transaction |
-|when | conditional block |
-|key | key to use for fetching the contextual value. Allowed values are pc (purpose code), mcc (merchant category code), cidr (CIDR notation to provide IP range), registeredWith (array containing where entity is registered ), dataType (dataType shared/requested by DP/DC) |
-|operator | operator to be used for matching the contextual value of the key with value provided. |
-|value | array of values |
-
+| Properties    | Description                                                                                                                                                                                                                                                              |
+| :------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| version       | version of the policy                                                                                                                                                                                                                                                    |
+| rules         | array of rules defined in this policy                                                                                                                                                                                                                                    |
+| rulesOperator | operator to be used between multiple rules. Either match all or match any                                                                                                                                                                                                |
+| effect        | if the condition is met should we allow or deny the transaction                                                                                                                                                                                                          |
+| when          | conditional block                                                                                                                                                                                                                                                        |
+| key           | key to use for fetching the contextual value. Allowed values are pc (purpose code), mcc (merchant category code), cidr (CIDR notation to provide IP range), registeredWith (array containing where entity is registered ), dataType (dataType shared/requested by DP/DC) |
+| operator      | operator to be used for matching the contextual value of the key with value provided.                                                                                                                                                                                    |
+| value         | array of values                                                                                                                                                                                                                                                          |
