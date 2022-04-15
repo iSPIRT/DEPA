@@ -10,10 +10,10 @@ Prior work on DEPA includes the technology specifications of the [Account Aggreg
 - [Terminology](/docs/terminology.md)
 - [Eosystem and Networks](/docs/ecosystemAndNetworks.md)
 - Registries
-  - [Lookup Registry](/docs/registeries/lookupRegistry.md)
-  - [Trust Registry and Policies](/docs/registeries/trustRegistry.md)
-  - [Schema Repository](/docs/registeries/schemaRegistry.md)
-  - [Purpose Code Registry](/docs/registeries/purposeCodeRegistry.md)
+  - [Lookup Registry](/docs/registries/lookupRegistry.md)
+  - [Trust Registry and Policies](/docs/registries/trustRegistry.md)
+  - [Schema Repository](/docs/registries/schemaRegistry.md)
+  - [Purpose Code Registry](/docs/registries/purposeCodeRegistry.md)
 - Specification
   - Building Blocks
     - [Consent Artifact](/docs/consentArtifact.md)
